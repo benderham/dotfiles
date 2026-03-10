@@ -91,6 +91,8 @@ Current apps in the `Brewfile` (`cask`):
 - `font-fira-code-nerd-font` - Fira Code Nerd Font with programming ligatures and patched icons.
 - `ghostty` - Fast, modern GPU-accelerated terminal emulator.
 - `google-chrome` - Google’s web browser.
+- `logi-options+` - Logitech utility for customizing supported mice, keyboards, and device settings.
+- `logitune` - Logitech app for managing webcams, headsets, and video collaboration device settings.
 - `notion` - All-in-one workspace for notes, docs, and project management.
 - `notion-calendar` - Calendar app integrated with Notion workflows.
 - `pixelsnap` - On-screen measurement tool for designers and developers.

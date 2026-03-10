@@ -27,11 +27,13 @@ cask "firefox@developer-edition"
 cask "font-fira-code-nerd-font"
 cask "ghostty"
 cask "google-chrome"
+cask "logi-options+"
+cask "logitune"
 # cask "notion"
 cask "notion-calendar"
 cask "pixelsnap"
 # cask "raycast"
-cask "slack"
+cask "slack"`
 cask "visual-studio-code"
 
 # Apps from the App Store
