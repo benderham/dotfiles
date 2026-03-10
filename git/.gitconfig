@@ -1,0 +1,69 @@
+# Shared settings
+
+[user]
+	name = Ben Derham	# Global user name for Git commits
+
+[core]
+	editor = code --wait									# Use VS Code as default editor, wait for it to close before continuing
+	excludesfile = ~/.gitignore_global		# Global .gitignore file
+
+[column]
+	ui = auto	# Show columns in Git output where supported
+
+[branch]
+	sort = -committerdate	# Show branches sorted by recent commits (descending)
+
+[branch "main"]
+	rebase = true 	# Rebase main branch when pulling to keep history clean
+
+[tag]
+	sort = version:refname	# Sort tags by version number
+
+[diff]
+	algorithm = histogram	# Use histogram diff algorithm (good for code)
+	colorMoved = plain		# Highlight moved lines plainly
+	mnemonicPrefix = true	# Mnemonic diff prefixes (e.g., "i" for index, "w" for working tree)
+	renames = true				# Detect renames in diffs
+
+[filter "lfs"]
+	clean = git-lfs clean -- %f				# Use Git LFS to clean files when they are added to the index
+	process = git-lfs filter-process	# Use Git LFS to process files
+	required = true										# Ensure Git LFS is required for repositories that use it
+	smudge = git-lfs smudge -- %f			# Use Git LFS to replace the pointer file with the actual file when checking out
+
+[push]
+	autoSetupRemote = true	# Automatically track upstream when pushing new branches
+	default = simple				# Push current branch to remote branch of the same name
+
+[pull]
+	ff = only	# Only allow fast-forward pulls (fail otherwise)
+	rebase = true
+
+[fetch]
+	prune = true	# Automatically remove deleted remote branches
+
+[rerere]
+	enabled = true		# Enable reusing recorded resolutions for merge conflicts
+	autoUpdate = true	# Auto-stage resolved conflicts when applying rerere
+
+[rebase]
+	autoSquash = true	# Auto reorder fixup/squash commits during rebase
+	autoStash = true	# Stash local changes before rebase and reapply after
+	updateRefs = true	# Automatically update branch refs after successful rebase
+
+[init]
+	defaultBranch = main	# Default branch name when creating new repos
+
+# Personal overrides
+[include]
+	path = ~/.gitconfig-personal
+
+# Work-specific settings
+[includeIf "gitdir:~/Sites/work"]
+	path = ~/.gitconfig-work
+
+# 1Password SSH config
+[include]
+	path = ~/.gitconfig-1password-ssh
+[advice]
+	skippedCherryPicks = false
