@@ -22,7 +22,7 @@ brew "zsh"
 
 # Apps
 cask "cleanshot"
-cask "figma"
+# cask "figma"
 cask "firefox@developer-edition"
 cask "font-fira-code-nerd-font"
 cask "ghostty"
@@ -37,4 +37,4 @@ cask "slack"
 cask "visual-studio-code"
 
 # Apps from the App Store
-mas "Harvest", id: 506189836
+# mas "Harvest", id: 506189836

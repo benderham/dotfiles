@@ -2,6 +2,9 @@
 .stow-backups/
 Brewfile.lock.json
 
+# 1Password SSH git config -- never commit!
+git/.gitconfig-1password-ssh
+
 # Zsh generates these at runtime -- never commit them
 zsh/.config/zsh/.zcompdump*
 zsh/.config/zsh/.zcompcache/
