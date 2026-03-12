@@ -29,11 +29,11 @@ cask "ghostty"
 cask "google-chrome"
 cask "logi-options+"
 cask "logitune"
-# cask "notion"
+cask "notion"
 cask "notion-calendar"
 cask "pixelsnap"
-# cask "raycast"
-cask "slack"`
+cask "raycast"
+cask "slack"
 cask "visual-studio-code"
 
 # Apps from the App Store
