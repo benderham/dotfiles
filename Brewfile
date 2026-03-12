@@ -1,5 +1,6 @@
 # Packages
 brew "bat"
+brew "copilot-cli"
 brew "curl"
 brew "doggo"
 brew "eza"
