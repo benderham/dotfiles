@@ -22,7 +22,6 @@ brew "zoxide"
 brew "zsh"
 
 # Apps
-cask "cleanshot"
 # cask "figma"
 cask "firefox@developer-edition"
 cask "font-fira-code-nerd-font"

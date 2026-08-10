@@ -85,17 +85,16 @@ Current packages in the `Brewfile`:
 
 Current apps in the `Brewfile` (`cask`):
 
-- `cleanshot` - Advanced screenshot and screen recording tool for macOS.
 - `figma` - Collaborative interface design and prototyping app.
 - `firefox@developer-edition` - Firefox build with developer-focused tools and features.
 - `font-fira-code-nerd-font` - Fira Code Nerd Font with programming ligatures and patched icons.
 - `ghostty` - Fast, modern GPU-accelerated terminal emulator.
 - `google-chrome` - Google’s web browser.
+- `insomnia` - HTTP and GraphQL Client.
 - `logi-options+` - Logitech utility for customizing supported mice, keyboards, and device settings.
 - `logitune` - Logitech app for managing webcams, headsets, and video collaboration device settings.
 - `notion` - All-in-one workspace for notes, docs, and project management.
 - `notion-calendar` - Calendar app integrated with Notion workflows.
-- `pixelsnap` - On-screen measurement tool for designers and developers.
 - `raycast` - Spotlight-style launcher and productivity command palette.
 - `slack` - Team communication and collaboration app.
 - `visual-studio-code` - Code editor for development workflows.
