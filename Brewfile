@@ -23,20 +23,24 @@ brew "zsh"
 
 # Apps
 cask "cleanshot"
-cask "figma"
+# cask "figma"
 cask "firefox@developer-edition"
 cask "font-fira-code-nerd-font"
 cask "ghostty"
 cask "google-chrome"
+cask "insomnia"
 cask "logi-options+"
 cask "logitune"
 cask "notion"
 cask "notion-calendar"
-cask "pixelsnap"
 cask "raycast"
 cask "slack"
 cask "visual-studio-code"
 cask "zoom"
 
 # Apps from the App Store
+<<<<<<< HEAD
 mas "Harvest", id: 506189836
+=======
+# mas "Harvest", id: 506189836
+>>>>>>> 62b9efe (feat: insomnia cask)
