@@ -38,8 +38,12 @@ ln -sfn "$RTK_FILTERS_SRC" "$RTK_FILTERS_DEST"
 info "Linked global filters: $RTK_FILTERS_DEST -> $RTK_FILTERS_SRC"
 
 # -- Claude Code ---------------------------------------------------------------
-info "Configuring rtk for Claude Code..."
-rtk init -g --auto-patch || warn "rtk Claude Code setup may have failed."
+if command_exists claude; then
+	info "Configuring rtk for Claude Code..."
+	rtk init -g --auto-patch || warn "rtk Claude Code setup may have failed."
+else
+	info "Claude Code not installed — skipping rtk Claude Code wiring."
+fi
 
 # -- Codex ---------------------------------------------------------------------
 if command_exists codex; then

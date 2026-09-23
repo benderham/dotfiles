@@ -180,7 +180,7 @@ pick it in the picker.
 
 - Symlinks the tracked global filters (`rtk/filters.toml`) into
   `~/Library/Application Support/rtk/filters.toml`.
-- Wires rtk into **Claude Code** via `rtk init -g --auto-patch`.
+- Wires rtk into **Claude Code** via `rtk init -g --auto-patch`, only if `claude` is installed.
 - Wires rtk into **Codex** via `rtk init -g --codex`, only if `codex` is installed.
 
 ```bash
