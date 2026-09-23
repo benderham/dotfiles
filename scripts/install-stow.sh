@@ -23,10 +23,7 @@ stow_packages() {
 		dir="${dir%/}"
 		name="$(basename "$dir")"
 		case "$name" in
-			# rtk is NOT a stow package: its target (~/Library/Application Support/rtk)
-			# also holds runtime data (history.db), which stow would fold into the repo.
-			# install-rtk.sh symlinks just filters.toml instead.
-			scripts|rtk|.git|.stow-backups) continue ;;
+			scripts|.git|.stow-backups) continue ;;
 		esac
 		packages+=("$name")
 	done
