@@ -106,6 +106,11 @@ optional_phase "Restore Claude skills from the lockfile?" \
 	"$DOTFILES/scripts/install-skills.sh" \
 	"Skipping skills. Run later: ~/.dotfiles/scripts/install-skills.sh"
 
+step "Phase 10 — ponytail plugin"
+optional_phase "Install the ponytail plugin (Claude Code / Codex)?" \
+	"$DOTFILES/scripts/install-ponytail.sh" \
+	"Skipping ponytail. Run later: ~/.dotfiles/scripts/install-ponytail.sh"
+
 # -- Done ----------------------------------------------------------------------
 
 step "Done"
