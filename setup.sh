@@ -101,6 +101,11 @@ optional_phase "Set up rtk for Claude Code and Codex?" \
 	"$DOTFILES/scripts/install-rtk.sh" \
 	"Skipping rtk. Run later: ~/.dotfiles/scripts/install-rtk.sh"
 
+step "Phase 9 — Skills"
+optional_phase "Restore Claude skills from the lockfile?" \
+	"$DOTFILES/scripts/install-skills.sh" \
+	"Skipping skills. Run later: ~/.dotfiles/scripts/install-skills.sh"
+
 # -- Done ----------------------------------------------------------------------
 
 step "Done"
