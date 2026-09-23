@@ -4,14 +4,14 @@ set -euo pipefail
 # Set up a machine-specific work git identity.
 #
 # The main ~/.gitconfig applies your personal identity globally and includes
-# ~/.gitconfig-work only for repos under ~/Sites/Thinkmill/. That work file is
+# ~/.gitconfig-work only for repos under ~/Sites/Work/. That work file is
 # gitignored and lives outside the repo, so work details never get committed to
 # this personal repo. This script creates it — only on a work machine.
 
 source "$(cd "$(dirname "$0")" && pwd)/lib.sh"
 
 WORK_CONFIG="$HOME/.gitconfig-work"
-WORK_DIR="$HOME/Sites/Thinkmill"
+WORK_DIR="$HOME/Sites/Work"
 
 # Default NO: a personal machine is the common case and should stay clean.
 read -r -p "$(printf "${YELLOW}? Is this a work machine (set up a work git identity)? [y/N] ${NC}")" reply

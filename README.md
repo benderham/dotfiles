@@ -103,7 +103,7 @@ cp ~/.config/zsh/.zshrc.local.example ~/.config/zsh/.zshrc.local
 Identity is chosen by **where a repo lives**, so the same config works on every machine:
 
 - **Personal** is the default everywhere — `git/.gitconfig-personal` (tracked).
-- **Work** applies only to repos under `~/Sites/Thinkmill/`, via an `includeIf` that
+- **Work** applies only to repos under `~/Sites/Work/`, via an `includeIf` that
   loads `~/.gitconfig-work`. That file is **gitignored** and machine-specific, so work
   details never get committed to this personal repo.
 
@@ -115,7 +115,7 @@ work file never exists, so work identity never applies. Re-run it any time:
 ~/.dotfiles/scripts/setup-git.sh
 ```
 
-Clone work repos under `~/Sites/Thinkmill/` for the work identity to take effect.
+Clone work repos under `~/Sites/Work/` for the work identity to take effect.
 
 ## 1Password
 
