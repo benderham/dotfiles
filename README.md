@@ -30,9 +30,10 @@ Only Phase 1 (Homebrew) is mandatory — everything else depends on the tools it
 | 1     | `install-homebrew.sh`     | no        | Install or update Homebrew                                |
 | 2     | `install-brewfile.sh`     | yes       | Required Brewfile, then `fzf` picker for optional entries |
 | 3     | `install-stow.sh`         | yes       | Symlink configs from top-level dirs into `$HOME`          |
-| 4     | `install-bat-themes.sh`   | yes       | Download Catppuccin theme, rebuild bat cache              |
-| 5     | `setup-macos-defaults.sh` | yes       | macOS defaults (appearance/OLED, Dock, Finder, keyboard)  |
-| 6     | `setup-1password.sh`      | yes       | SSH agent + Git signing via 1Password                     |
+| 4     | `setup-git.sh`            | no        | Prompt (default no) to add a work git identity            |
+| 5     | `install-bat-themes.sh`   | yes       | Download Catppuccin theme, rebuild bat cache              |
+| 6     | `setup-macos-defaults.sh` | yes       | macOS defaults (appearance/OLED, Dock, Finder, keyboard)  |
+| 7     | `setup-1password.sh`      | yes       | SSH agent + Git signing via 1Password                     |
 
 Failed runs preserve `setup-YYYYMMDD-HHMMSS.log` in the repo root and print the path. Successful runs clean up.
 
@@ -96,6 +97,25 @@ work-only aliases) goes in `~/.config/zsh/.zshrc.local`, which `.zshrc` sources 
 ```bash
 cp ~/.config/zsh/.zshrc.local.example ~/.config/zsh/.zshrc.local
 ```
+
+## Git identity
+
+Identity is chosen by **where a repo lives**, so the same config works on every machine:
+
+- **Personal** is the default everywhere — `git/.gitconfig-personal` (tracked).
+- **Work** applies only to repos under `~/Sites/Thinkmill/`, via an `includeIf` that
+  loads `~/.gitconfig-work`. That file is **gitignored** and machine-specific, so work
+  details never get committed to this personal repo.
+
+`setup-git.sh` (Phase 4) prompts — defaulting to **no** — and only writes
+`~/.gitconfig-work` when you confirm this is a work machine. On a personal machine the
+work file never exists, so work identity never applies. Re-run it any time:
+
+```bash
+~/.dotfiles/scripts/setup-git.sh
+```
+
+Clone work repos under `~/Sites/Thinkmill/` for the work identity to take effect.
 
 ## 1Password
 

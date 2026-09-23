@@ -76,17 +76,22 @@ optional_phase "Symlink dotfiles into \$HOME with stow?" \
 	"$DOTFILES/scripts/install-stow.sh" \
 	"Skipping stow. Run later: ~/.dotfiles/scripts/install-stow.sh"
 
-step "Phase 4 — Bat themes"
+step "Phase 4 — Git identity"
+# Runs unconditionally; the script prompts (default no) and only writes a work
+# identity if you say this is a work machine.
+"$DOTFILES/scripts/setup-git.sh"
+
+step "Phase 5 — Bat themes"
 optional_phase "Install bat themes?" \
 	"$DOTFILES/scripts/install-bat-themes.sh" \
 	"Skipping bat themes. Run later: ~/.dotfiles/scripts/install-bat-themes.sh"
 
-step "Phase 5 — macOS defaults"
+step "Phase 6 — macOS defaults"
 optional_phase "Apply macOS defaults (appearance, Dock, Finder, keyboard)?" \
 	"$DOTFILES/scripts/setup-macos-defaults.sh" \
 	"Skipping macOS defaults. Run later: ~/.dotfiles/scripts/setup-macos-defaults.sh"
 
-step "Phase 6 — 1Password for Git"
+step "Phase 7 — 1Password for Git"
 optional_phase "Set up 1Password for Git?" \
 	"$DOTFILES/scripts/setup-1password.sh" \
 	"Skipping 1Password setup. Run later: ~/.dotfiles/scripts/setup-1password.sh"

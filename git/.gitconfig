@@ -59,9 +59,12 @@
 [include]
 	path = ~/.gitconfig-personal
 
-# Employer-specific settings
-[includeIf "gitdir:~/Sites/[EmployerName]/**"]
-	path = ~/.gitconfig-[EmployerName]
+# Work identity, applied only to repos under ~/Sites/Thinkmill/. The file is
+# gitignored and machine-specific: run scripts/setup-git.sh to create it on a
+# work machine. On a personal machine it never exists, so work identity never
+# applies.
+[includeIf "gitdir:~/Sites/Thinkmill/**"]
+	path = ~/.gitconfig-work
 
 # 1Password SSH config
 [include]
