@@ -42,7 +42,11 @@ info "Configuring rtk for Claude Code..."
 rtk init -g --auto-patch || warn "rtk Claude Code setup may have failed."
 
 # -- Codex ---------------------------------------------------------------------
-info "Configuring rtk for Codex..."
-rtk init -g --codex || warn "rtk Codex setup may have failed."
+if command_exists codex; then
+	info "Configuring rtk for Codex..."
+	rtk init -g --codex || warn "rtk Codex setup may have failed."
+else
+	info "Codex not installed — skipping rtk Codex wiring."
+fi
 
 success "rtk setup complete."
