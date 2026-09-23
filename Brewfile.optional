@@ -9,7 +9,6 @@
 # Lines starting with # and blank lines are ignored.
 
 # -- CLI tools ----------------------------------------------------------------
-brew:copilot-cli                             # GitHub Copilot CLI
 brew:curl                                    # newer curl than the system one
 brew:doggo                                   # modern DNS client
 brew:gh                                      # GitHub CLI
@@ -27,15 +26,9 @@ cask:firefox@developer-edition               # browser
 cask:ghostty                                 # terminal emulator (config in ghostty/)
 cask:google-chrome                           # browser
 cask:insomnia                                # HTTP & GraphQL client
-cask:logi-options+                           # Logitech mouse/keyboard settings
 cask:logitune                                # Logitech webcam/headset settings
 cask:notion                                  # notes & docs
 cask:notion-calendar                         # calendar
 cask:raycast                                 # launcher & productivity
-cask:slack                                   # team chat
+# cask:slack                                 # team chat — enable if needed
 cask:visual-studio-code                      # editor (git core.editor = code --wait)
-cask:zoom                                    # video calls
-# cask:figma                                 # design tool — enable if needed
-
-# -- Mac App Store ------------------------------------------------------------
-# mas:Harvest=506189836                      # time tracking — enable if needed
