@@ -15,10 +15,9 @@ alias ls="eza"																								# A modern replacement for ls
 alias ll="eza --long --all --group-directories-first --icons"	# List all files with details and icons
 alias tree="eza --tree"																				# List files in a tree-like structure
 
-# Application shortcuts
-alias tailscale="/Applications/Tailscale.app/Contents/MacOS/Tailscale" # Tailscale CLI
-
 # Brewfile Aliases
 alias binstall='brew bundle --file=~/.dotfiles/Brewfile'
-alias bdump='brew bundle dump --force --no-vscode --file=~/.dotfiles/Brewfile'
+# Snapshot what's installed to a scratch file for review — never clobbers the
+# bootstrap Brewfile. Cherry-pick anything new into Brewfile.optional by hand.
+alias bdump='brew bundle dump --force --no-vscode --file=/tmp/Brewfile.dump'
 alias bclean='brew bundle cleanup --force --file=~/.dotfiles/Brewfile'

@@ -1,0 +1,174 @@
+{
+  "version": 3,
+  "skills": {
+    "thermo-nuclear-code-quality-review": {
+      "installedAt": "2026-06-07T11:52:58.586Z",
+      "skillFolderHash": "d9c8935dd560b3b6f5941247d04a1843f8c7cc35",
+      "skillPath": "cursor-team-kit/skills/thermo-nuclear-code-quality-review/SKILL.md",
+      "source": "cursor/plugins",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/cursor/plugins.git",
+      "updatedAt": "2026-06-07T11:52:58.586Z"
+    },
+    "pnpm": {
+      "installedAt": "2026-04-24T12:44:35.624Z",
+      "skillFolderHash": "3e2f92c74abae6e9d2e4fc45b5d73a7b307348c9",
+      "skillPath": "skills/pnpm/SKILL.md",
+      "source": "antfu/skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/antfu/skills.git",
+      "updatedAt": "2026-05-17T01:57:59.019Z"
+    },
+    "vite": {
+      "installedAt": "2026-05-03T04:33:11.355Z",
+      "skillFolderHash": "3c0dc60ce4ffc34fca02aaa7eb21130ae48c8dff",
+      "skillPath": "skills/vite/SKILL.md",
+      "source": "antfu/skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/antfu/skills.git",
+      "updatedAt": "2026-05-17T01:57:59.022Z"
+    },
+    "vitest": {
+      "installedAt": "2026-04-24T12:44:36.294Z",
+      "skillFolderHash": "b9413e0a4a6880e09e63f13ce59ee7de4019a27d",
+      "skillPath": "skills/vitest/SKILL.md",
+      "source": "antfu/skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/antfu/skills.git",
+      "updatedAt": "2026-05-17T01:57:59.022Z"
+    },
+    "configure-knip": {
+      "installedAt": "2026-04-11T00:58:25.691Z",
+      "skillFolderHash": "46c0a2e3b3f062846fd36b70bc9e959d0f15568a",
+      "skillPath": "skills/configure-knip/SKILL.md",
+      "source": "webpro/skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/webpro/skills.git",
+      "updatedAt": "2026-06-03T00:44:13.190Z"
+    },
+    "optimize-javascript": {
+      "installedAt": "2026-04-11T00:58:42.042Z",
+      "skillFolderHash": "11e483df6763326e9949893a294dbf1f0a6aa490",
+      "skillPath": "skills/optimize-javascript/SKILL.md",
+      "source": "webpro/skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/webpro/skills.git",
+      "updatedAt": "2026-06-03T00:44:14.785Z"
+    },
+    "vercel-react-best-practices": {
+      "installedAt": "2026-05-17T02:02:50.484Z",
+      "skillFolderHash": "343db72180d05814949fef7d46be96b5c6ee86b3",
+      "skillPath": "skills/react-best-practices/SKILL.md",
+      "source": "vercel-labs/agent-skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/vercel-labs/agent-skills.git",
+      "updatedAt": "2026-05-17T02:02:50.484Z"
+    },
+    "vercel-composition-patterns": {
+      "installedAt": "2026-05-17T02:02:50.482Z",
+      "skillFolderHash": "bf90d0a4b83ea054653350f9c67f6de235d3a368",
+      "skillPath": "skills/composition-patterns/SKILL.md",
+      "source": "vercel-labs/agent-skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/vercel-labs/agent-skills.git",
+      "updatedAt": "2026-05-17T02:02:50.482Z"
+    },
+    "vercel-react-view-transitions": {
+      "installedAt": "2026-05-17T02:02:50.484Z",
+      "skillFolderHash": "4d46c637057aae90b9ec5280190c25dc0d90ec28",
+      "skillPath": "skills/react-view-transitions/SKILL.md",
+      "source": "vercel-labs/agent-skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/vercel-labs/agent-skills.git",
+      "updatedAt": "2026-05-17T02:02:50.484Z"
+    },
+    "web-design-guidelines": {
+      "installedAt": "2026-05-17T02:02:50.485Z",
+      "skillFolderHash": "3116f3e62dbd02b44a598b1aa690d2a8938e8f89",
+      "skillPath": "skills/web-design-guidelines/SKILL.md",
+      "source": "vercel-labs/agent-skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/vercel-labs/agent-skills.git",
+      "updatedAt": "2026-05-17T02:02:50.485Z"
+    },
+    "agent-browser": {
+      "installedAt": "2026-04-08T10:08:45.699Z",
+      "skillFolderHash": "c1470a475a0472fceda2401ea6763708a91680a8",
+      "skillPath": "skills/agent-browser/SKILL.md",
+      "source": "vercel-labs/agent-browser",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/vercel-labs/agent-browser.git",
+      "updatedAt": "2026-05-17T01:57:47.837Z"
+    },
+    "accessibility": {
+      "installedAt": "2026-05-09T12:38:24.672Z",
+      "skillFolderHash": "abdb452337317f5840e4298e46ad07663342dbe8",
+      "skillPath": "skills/accessibility/SKILL.md",
+      "source": "addyosmani/web-quality-skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/addyosmani/web-quality-skills.git",
+      "updatedAt": "2026-05-17T01:57:48.466Z"
+    },
+    "core-web-vitals": {
+      "installedAt": "2026-05-17T01:57:48.467Z",
+      "skillFolderHash": "041da568684b2b15ccb8789253dd2df29c8de433",
+      "skillPath": "skills/core-web-vitals/SKILL.md",
+      "source": "addyosmani/web-quality-skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/addyosmani/web-quality-skills.git",
+      "updatedAt": "2026-05-17T01:57:48.467Z"
+    },
+    "performance": {
+      "installedAt": "2026-05-17T01:57:48.468Z",
+      "skillFolderHash": "62de2e9d8439998bd386f06a1c8acb96877f48fe",
+      "skillPath": "skills/performance/SKILL.md",
+      "source": "addyosmani/web-quality-skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/addyosmani/web-quality-skills.git",
+      "updatedAt": "2026-05-17T01:57:48.468Z"
+    },
+    "seo": {
+      "installedAt": "2026-05-17T01:57:48.468Z",
+      "skillFolderHash": "2bef4cf1f39eec98ab6e3d2bf8ffb47619d50b6b",
+      "skillPath": "skills/seo/SKILL.md",
+      "source": "addyosmani/web-quality-skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/addyosmani/web-quality-skills.git",
+      "updatedAt": "2026-05-17T01:57:48.468Z"
+    },
+    "web-quality-audit": {
+      "installedAt": "2026-05-17T01:57:48.469Z",
+      "skillFolderHash": "a927159d150e7681018cfb1eebefa8a2c951c5fb",
+      "skillPath": "skills/web-quality-audit/SKILL.md",
+      "source": "addyosmani/web-quality-skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/addyosmani/web-quality-skills.git",
+      "updatedAt": "2026-05-17T01:57:48.469Z"
+    },
+    "best-practices": {
+      "installedAt": "2026-05-17T01:57:48.467Z",
+      "skillFolderHash": "31953d33750e2be4444cf4f0bb8b2fd386116d50",
+      "skillPath": "skills/best-practices/SKILL.md",
+      "source": "addyosmani/web-quality-skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/addyosmani/web-quality-skills.git",
+      "updatedAt": "2026-05-17T01:57:48.467Z"
+    },
+    "modern-web-guidance": {
+      "installedAt": "2026-05-27T06:08:01.962Z",
+      "skillFolderHash": "db0b42d1a8941087ff284e139b05799008680913",
+      "skillPath": "skills/modern-web-guidance/SKILL.md",
+      "source": "GoogleChrome/modern-web-guidance",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/GoogleChrome/modern-web-guidance.git",
+      "updatedAt": "2026-06-14T01:07:58.849Z"
+    }
+  },
+  "dismissed": {
+    "findSkillsPrompt": true
+  },
+  "lastSelectedAgents": [
+    "claude-code",
+    "codex"
+  ]
+}

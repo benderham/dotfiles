@@ -1,143 +1,237 @@
-# Dotfiles Setup
+# Dotfiles
 
-This repository contains the dotfiles for my macOS system. It includes configurations for terminal, shell, and various development tools.
+macOS dotfiles managed with [GNU Stow](https://www.gnu.org/software/stow/).
+Designed to be portable across work and personal machines: identity is split
+via git `includeIf`, GUI apps are opt-in, and per-machine tweaks live in an
+untracked local file.
 
-## Installation
+## Quick start
 
-### Remote Installation
-
-You can run the setup script directly from this repository using `curl`. This will:
-
-- Clone the dotfiles repository if not already cloned
-- Install Homebrew if it is not already installed
-- Install dependencies from the Brewfile
-- Symlink dotfiles to their correct locations using GNU Stow
-
-To execute the script remotely:
+Fresh Mac:
 
 ```bash
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/benderham/dotfiles/main/setup.sh)"
 ```
 
-### Local Installation
-
-If you've already cloned the repository, you can run the setup script locally:
+Repo already cloned:
 
 ```bash
-# Make the script executable first
-chmod +x ~/.dotfiles/setup.sh
-
-# Run the script
 ~/.dotfiles/setup.sh
 ```
 
-### Manual Steps
+## How it works
 
-If any issues occur while running the script, or if you prefer a manual setup, follow these steps:
+`setup.sh` runs each phase as a separate script under `scripts/`. Any script can be re-run on its own.
 
-#### Install Homebrew (if not already installed)
+Only Phase 1 (Homebrew) is mandatory — everything else depends on the tools it installs. Every other phase prompts before running: hit Enter to accept (the default) or answer `n` to skip. That makes re-running setup for a single phase painless — just skip past the ones you don't need.
+
+| Phase | Script                    | Optional? | What it does                                              |
+| ----- | ------------------------- | --------- | --------------------------------------------------------- |
+| 1     | `install-homebrew.sh`     | no        | Install or update Homebrew                                |
+| 2     | `install-brewfile.sh`     | yes       | Required Brewfile, then `fzf` picker for optional entries |
+| 3     | `install-stow.sh`         | yes       | Symlink configs from top-level dirs into `$HOME`          |
+| 4     | `setup-git.sh`            | no        | Prompt (default no) to add a work git identity            |
+| 5     | `install-bat-themes.sh`   | yes       | Download Catppuccin theme, rebuild bat cache              |
+| 6     | `setup-macos-defaults.sh` | yes       | macOS defaults (appearance/OLED, Dock, Finder, keyboard)  |
+| 7     | `setup-1password.sh`      | yes       | SSH agent + Git signing via 1Password                     |
+| 8     | `install-rtk.sh`          | yes       | Link rtk filters, wire rtk into Claude Code + Codex        |
+| 9     | `install-skills.sh`       | yes       | Restore pinned Claude skills from the lockfile             |
+| 10    | `install-plugins.sh`      | yes       | Install agent plugins (ponytail, caveman, mattpocock) per agent |
+
+Failed runs preserve `setup-YYYYMMDD-HHMMSS.log` in the repo root and print the path. Successful runs clean up.
+
+## Brewfile
+
+`Brewfile` is bootstrap-only — just the CLI tools needed for a working shell and to run the installer itself (`git`, `stow`, `mise`, `zsh`, `starship`, `fzf`, `zoxide`, `eza`, `bat`, `ripgrep`, `fd`, `mas`). Everything else — GUI apps, fonts, and situational CLIs — lives in `Brewfile.optional` and is chosen from an `fzf` checklist picker.
 
 ```bash
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+~/.dotfiles/scripts/install-brewfile.sh         # required + picker
+~/.dotfiles/scripts/install-brewfile.sh --all   # required + all optional
+~/.dotfiles/scripts/install-brewfile.sh --none  # required only
 ```
 
-#### Install Brewfile dependencies
+`Brewfile.optional` format:
 
-```bash
-# Navigate to the dotfiles directory
-cd ~/.dotfiles
-
-# Install dependencies from the Brewfile (using the specific file path)
-brew bundle --file=~/.dotfiles/Brewfile
+```text
+brew:doggo                       # modern DNS client
+cask:ghostty                     # terminal emulator
+tap:owner/repo
+mas:Harvest=506189836
 ```
 
-#### Symlink the dotfiles using GNU Stow
+Selections feed into `brew bundle --file=-`.
+
+### Maintenance
 
 ```bash
-cd ~/.dotfiles
-stow home_files
-```
-
-### Updating Brewfile
-
-Current packages in the `Brewfile`:
-
-- `bat` - `cat` clone with syntax highlighting and Git integration.
-- `curl` - Command-line tool for transferring data with URLs.
-- `doggo` - Modern DNS lookup client for quick DNS queries.
-- `eza` - Modern replacement for `ls` with icons and git info.
-- `fd` - Fast, user-friendly alternative to `find`.
-- `fzf` - Fuzzy finder for files, command history, and more.
-- `gh` - GitHub CLI for issues, PRs, and repo workflows.
-- `git` - Distributed version control system.
-- `imagemagick` - Tools for image conversion and manipulation.
-- `lazygit` - Terminal UI for common Git operations.
-- `mas` - CLI for installing apps from the Mac App Store.
-- `mise` - Runtime/version manager for languages and tools.
-- `ripgrep` - Extremely fast recursive text search (`rg`).
-- `starship` - Cross-shell, customizable prompt.
-- `stow` - Symlink farm manager for dotfiles.
-- `trash` - CLI that moves files to Trash instead of deleting permanently.
-- `wget` - Non-interactive network downloader.
-- `yazi` - Fast terminal file manager.
-- `zoxide` - Smarter `cd` command that learns your habits.
-- `zsh` - Z shell.
-
-Current apps in the `Brewfile` (`cask`):
-
-- `figma` - Collaborative interface design and prototyping app.
-- `firefox@developer-edition` - Firefox build with developer-focused tools and features.
-- `font-fira-code-nerd-font` - Fira Code Nerd Font with programming ligatures and patched icons.
-- `ghostty` - Fast, modern GPU-accelerated terminal emulator.
-- `google-chrome` - Google’s web browser.
-- `insomnia` - HTTP and GraphQL Client.
-- `logi-options+` - Logitech utility for customizing supported mice, keyboards, and device settings.
-- `logitune` - Logitech app for managing webcams, headsets, and video collaboration device settings.
-- `notion` - All-in-one workspace for notes, docs, and project management.
-- `notion-calendar` - Calendar app integrated with Notion workflows.
-- `raycast` - Spotlight-style launcher and productivity command palette.
-- `slack` - Team communication and collaboration app.
-- `visual-studio-code` - Code editor for development workflows.
-
-Current App Store apps in the `Brewfile` (`mas`):
-
-- `Harvest` (`506189836`) - Time tracking app for logging work and billing hours.
-
-To update the Brewfile with any new dependencies, run:
-
-```bash
-brew bundle dump --force --no-vscode --file=~/.dotfiles/Brewfile
-```
-
-To remove any installed packages not listed in the Brewfile, run:
-
-```bash
+# Remove anything not in Brewfile (ignores Brewfile.optional)
 brew bundle cleanup --force --file=~/.dotfiles/Brewfile
 ```
 
-This command will uninstall all packages, casks, or taps not defined in the `Brewfile`, keeping your system aligned with the `Brewfile` contents.
+> **Warning:** avoid `brew bundle dump --file=~/.dotfiles/Brewfile` — it rewrites the
+> file from _everything_ currently installed, which re-bloats the bootstrap-only
+> `Brewfile` and undoes the split. The `bdump` alias dumps to `/tmp/Brewfile.dump`
+> instead; cherry-pick anything new into `Brewfile.optional` by hand.
 
-**Note:** VS Code extensions are excluded from the Brewfile (via `--no-vscode` flag) and should be managed through VS Code's built-in Settings Sync feature instead.
+> **Warning:** `brew bundle cleanup` only consults the required `Brewfile`, so it
+> will uninstall everything you picked from `Brewfile.optional`. Treat it as a reset
+> back to the bootstrap baseline — re-run the picker (or `install-brewfile.sh --all`)
+> to restore your optional packages afterwards.
 
-## 1Password Setup
+VS Code extensions sync through Settings Sync, hence `--no-vscode`.
 
-Optional setup for using 1Password as your SSH agent and for Git commit signing.
+## Adding a new config
 
-### Automatic Setup
-
-Run the setup script:
+Each top-level dir is a stow package, except `scripts`, `.git`, and `.stow-backups`:
 
 ```bash
-~/.dotfiles/scripts/setup-1password.sh
+mkdir -p newtool/.config/newtool
+echo "my config" > newtool/.config/newtool/config.toml
+stow -t ~ newtool
+git add newtool && git commit -m "feat: add newtool config"
 ```
 
-This will:
+## Machine-specific config
 
-- Configure SSH to use 1Password agent
-- Set up Git commit signing (requires 1Password CLI)
+Anything that should only run on one machine (per-machine tool inits, PATH tweaks,
+work-only aliases) goes in `~/.config/zsh/.zshrc.local`, which `.zshrc` sources last and
+`.gitignore` keeps untracked. Bootstrap it from the tracked template:
 
-### Requirements
+```bash
+cp ~/.config/zsh/.zshrc.local.example ~/.config/zsh/.zshrc.local
+```
 
-- 1Password app with SSH agent enabled
-- For Git signing: 1Password CLI (`brew install --cask 1password/tap/1password-cli`)
-- SSH key stored in 1Password (customize script if item name isn't "GitHub key")
+## Git identity
+
+The default identity is **per machine**, chosen by `setup-git.sh` (Phase 4), which
+prompts defaulting to **no**:
+
+- **Personal machine** (answer no): personal identity is the default everywhere —
+  personal email + personal 1Password signing (`git/.gitconfig-personal` +
+  `~/.gitconfig-1password-ssh`). No work file exists.
+- **Work machine** (answer yes): the script writes a **gitignored**
+  `~/.gitconfig-machine` that makes **work the default** on that machine (work email,
+  optional work signing key), and scopes personal — including 1Password signing — to
+  repos under `~/Sites/Personal/`.
+
+So a work laptop never signs work commits with your personal 1Password key and never
+falls back to your personal email; and no work details are ever committed to this repo.
+
+Re-run any time (it can also revert a machine back to the personal default):
+
+```bash
+~/.dotfiles/scripts/setup-git.sh
+```
+
+## 1Password
+
+`setup-1password.sh` (optional) writes:
+
+- 1Password SSH agent socket into `~/.ssh/config`
+- `~/.gitconfig-1password-ssh` for SSH-based commit signing (sourced by the main gitconfig)
+
+Requires the 1Password app with SSH agent enabled, the 1Password CLI, and an SSH key item named `GitHub key`.
+
+## Skills
+
+A curated set of Claude skills is version-controlled here for reproducibility across
+machines. The lockfile (`skills/.local/state/skills/.skill-lock.json`) is stowed to
+`~/.local/state/skills/.skill-lock.json` and pins each skill to a source repo, so any
+machine restores the same set. It targets both `claude-code` and `codex`
+(`lastSelectedAgents`); the restore installs into whichever agents are present.
+
+### Install
+
+`install-skills.sh` (Phase 9) activates mise, prepares `pnpm` via corepack, and runs the
+restore:
+
+```bash
+~/.dotfiles/scripts/install-skills.sh
+# or directly:
+pnpm dlx skills experimental_install
+```
+
+### Usage
+
+```bash
+pnpm dlx skills experimental_install   # restore everything in the lockfile
+pnpm dlx skills add <owner>/<repo>     # add a skill (updates the lockfile)
+pnpm dlx skills                        # interactive picker / update
+```
+
+After adding or updating skills, commit the changed lockfile:
+
+```bash
+git add skills/.local/state/skills/.skill-lock.json && git commit -m "chore: update skills"
+```
+
+> **Pinned, not auto-updated.** The lockfile trades automatic freshness for
+> reproducibility — you get the same skills on every machine, and update deliberately by
+> re-running the restore (which re-pins). This is separate from Claude Code **plugins**,
+> which update on their own. Don't manage the same skill via both a plugin and this
+> lockfile, or it loads twice. First-party/Anthropic plugins (e.g. cloudflare, dataviz)
+> aren't GitHub skills and stay as plugins.
+
+## Agent plugins
+
+Some tools are **plugins**, not plain skills — they ship SessionStart hooks (always-on
+activation), statuslines, and slash commands that a bare `SKILL.md` install would drop. So
+they can't live in the skills lockfile; `install-plugins.sh` (Phase 10) installs them for
+whichever of `claude`/`codex` is present. Install paths differ per agent:
+
+| Plugin | Claude Code | Codex |
+| --- | --- | --- |
+| ponytail | `claude plugin install ponytail@ponytail` | native `codex plugin add ponytail@ponytail` |
+| caveman | `claude plugin install caveman@caveman` | `npx skills add JuliusBrussee/caveman -a codex` |
+| mattpocock-skills | `claude plugin install mattpocock-skills@claude-plugins-official` | `npx skills add mattpocock/skills -a codex` |
+
+```bash
+~/.dotfiles/scripts/install-plugins.sh   # installs for claude and/or codex, whichever exist
+```
+
+Only ponytail has a native Codex plugin; caveman and mattpocock have no native Codex plugin
+yet, so on Codex they install via the cross-agent skills registry (`npx skills add`, needs
+`node`/`npx` on PATH — mise provides it). Each step is `|| warn`, so unsupported combos skip
+cleanly.
+
+> Lifecycle hooks need `node` on PATH. Claude Code may require confirming a trust prompt — if
+> the CLI can't auto-accept, run `/plugin install <plugin>@<marketplace>` in Claude Code. In
+> Codex, run `/hooks` to trust hooks after install.
+
+## rtk
+
+[rtk](https://www.rtk-ai.app/) is a token-optimizing CLI proxy for AI coding agents — it
+trims noisy tool output to cut token spend. It's an optional Brewfile entry (`brew:rtk`);
+pick it in the picker.
+
+`install-rtk.sh` (Phase 8) is idempotent:
+
+- Symlinks the tracked global filters (`rtk/filters.toml`) into
+  `~/Library/Application Support/rtk/filters.toml`.
+- Wires rtk into **Claude Code** via `rtk init -g --auto-patch`, only if `claude` is installed.
+- Wires rtk into **Codex** via `rtk init -g --codex`, only if `codex` is installed.
+
+```bash
+~/.dotfiles/scripts/install-rtk.sh   # re-run any time; no-ops if already set up
+```
+
+> `rtk` is intentionally **not** a stow package. Its config dir also holds runtime data
+> (`history.db`), so stow would fold that into the repo. The script symlinks only
+> `filters.toml`; the hook/`RTK.md`/agent-config artifacts are regenerated by `rtk init`,
+> so they aren't tracked.
+
+## macOS defaults
+
+`setup-macos-defaults.sh` (optional) sets:
+
+- **Appearance (tuned for OLED):** force Dark mode permanently (dark pixels are physically off — less power, no burn-in); Graphite (grey) accent colour; disable font smoothing for crisp text (set in both scopes since it's read per-host); reduce transparency (solid black menus/Dock instead of grey); reduce motion; auto-hide the Dock and menu bar to remove the two permanent bright strips
+- Finder: show extensions, path bar, status bar; column view; folders on top; search current folder; new windows open at `$HOME`; no `.DS_Store` on network/USB
+- Dock: `tilesize=37`, hide recent apps, auto-hide
+- Keyboard: fast key repeat (2/15), no press-and-hold accent picker, full keyboard access in dialogs
+- Launch Services: no "Are you sure?" prompt for downloaded apps
+- Screenshots saved to `~/Downloads`
+- App Store: daily update check, auto-install
+
+> **Note:** reduce transparency and reduce motion write to `com.apple.universalaccess`,
+> which the accessibility daemon caches. They only take effect after a **logout/login**.
+> The rest apply immediately via `killall Dock`/`Finder`/`SystemUIServer`.
