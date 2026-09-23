@@ -5,7 +5,7 @@
 # Load zsh configurations
 
 # Initialise Starship prompt
-eval "$(starship init zsh)"
+command -v starship >/dev/null && eval "$(starship init zsh)"
 
 # Directory for Zinit (plugin manager for Zsh) and plugins
 ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
@@ -21,10 +21,12 @@ fi
 source "${ZINIT_HOME}/zinit.zsh"
 
 # Shell integrations
-eval "$(mise activate zsh)"					# 'mise' (runtime version manager)
-eval "$(mise hook-env -s zsh)"
-eval "$(fzf --zsh)"									# 'fzf' keybindings for fuzzy file finding
-eval "$(zoxide init --cmd cd zsh)"	# 'zoxide' (smarter 'cd' command)
+if command -v mise >/dev/null; then		# 'mise' (runtime version manager)
+	eval "$(mise activate zsh)"
+	eval "$(mise hook-env -s zsh)"
+fi
+command -v fzf    >/dev/null && eval "$(fzf --zsh)"									# 'fzf' keybindings for fuzzy file finding
+command -v zoxide >/dev/null && eval "$(zoxide init --cmd cd zsh)"	# 'zoxide' (smarter 'cd' command)
 
 # pnpm completion
 if command -v pnpm >/dev/null 2>&1; then
@@ -50,7 +52,7 @@ setopt appendhistory							# Append to history file on exit rather than overwrit
 setopt sharehistory								# Share history across all open terminal sessions
 setopt hist_ignore_space					# Ignore history entries beginning with a space (for private commands)
 setopt hist_ignore_all_dups				# Remove all duplicates from history file
-setopt hist_save_no_dups					# Prevent duplicate history entries in history file
+setopt hist_save_no_dups				# Prevent duplicate history entries in history file
 setopt hist_ignore_dups						# Ignore consecutive duplicates in current session
 setopt hist_find_no_dups					# Prevent duplicates when searching history
 setopt hist_verify								# Show command with history expansion to user before running it
@@ -93,7 +95,12 @@ fi
 # Use 'bat' for colourised man pages
 export MANPAGER="sh -c 'col -bx | bat -l man -p'"
 
-# Load local configuration if it exists
+# Disable GitHub CLI telemetry
+export GH_TELEMETRY=false
+export DO_NOT_TRACK=true
+
+# Load machine-specific configuration if it exists (gitignored).
+# See .zshrc.local.example for the pattern.
 if [[ -f "$ZDOTDIR/.zshrc.local" ]]; then
 	source "$ZDOTDIR/.zshrc.local"
 fi
