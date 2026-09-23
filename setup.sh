@@ -102,8 +102,7 @@ cat <<'EOF'
   2. Sign into 1Password app and enable CLI integration
        Settings → Developer → "Integrate with 1Password CLI"
   3. Sign into Slack, Zoom, Notion, Raycast, etc.
-  4. Configure Tailscale if used: tailscale up
-  5. Log out and back in so the OLED accessibility settings
+  4. Log out and back in so the OLED accessibility settings
      (reduce transparency / reduce motion) take effect
-  6. Open a new terminal (or `exec zsh`) to load the shell config
+  5. Open a new terminal (or `exec zsh`) to load the shell config
 EOF

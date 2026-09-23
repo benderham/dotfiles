@@ -15,11 +15,6 @@ alias ls="eza"																								# A modern replacement for ls
 alias ll="eza --long --all --group-directories-first --icons"	# List all files with details and icons
 alias tree="eza --tree"																				# List files in a tree-like structure
 
-# Application shortcuts
-# Tailscale CLI — only define when the app is actually installed
-[[ -x "/Applications/Tailscale.app/Contents/MacOS/Tailscale" ]] && \
-	alias tailscale="/Applications/Tailscale.app/Contents/MacOS/Tailscale"
-
 # Brewfile Aliases
 alias binstall='brew bundle --file=~/.dotfiles/Brewfile'
 # Snapshot what's installed to a scratch file for review — never clobbers the
