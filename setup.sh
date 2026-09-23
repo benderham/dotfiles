@@ -96,6 +96,11 @@ optional_phase "Set up 1Password for Git?" \
 	"$DOTFILES/scripts/setup-1password.sh" \
 	"Skipping 1Password setup. Run later: ~/.dotfiles/scripts/setup-1password.sh"
 
+step "Phase 8 — rtk (token proxy for AI agents)"
+optional_phase "Set up rtk for Claude Code and Codex?" \
+	"$DOTFILES/scripts/install-rtk.sh" \
+	"Skipping rtk. Run later: ~/.dotfiles/scripts/install-rtk.sh"
+
 # -- Done ----------------------------------------------------------------------
 
 step "Done"

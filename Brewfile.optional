@@ -14,6 +14,7 @@ brew:doggo                                   # modern DNS client
 brew:gh                                      # GitHub CLI
 brew:imagemagick                             # image conversion & manipulation
 brew:lazygit                                 # git TUI
+brew:rtk                                      # token-optimizing CLI proxy for AI agents
 brew:trash                                   # move files to the Trash instead of rm
 brew:wget                                    # file downloader
 brew:yazi                                    # terminal file manager
