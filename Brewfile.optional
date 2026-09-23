@@ -24,6 +24,7 @@ cask:font-fira-code-nerd-font                # Fira Code (Nerd Font) — used by
 # -- Apps ---------------------------------------------------------------------
 cask:chatgpt                                 # ChatGPT desktop app
 cask:claude                                  # Claude desktop app
+cask:claude-code                             # Claude Code coding agent (CLI)
 cask:codex                                   # OpenAI Codex coding agent (CLI)
 cask:firefox@developer-edition               # browser
 cask:ghostty                                 # terminal emulator (config in ghostty/)
