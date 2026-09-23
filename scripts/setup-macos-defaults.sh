@@ -34,6 +34,13 @@ defaults write NSGlobalDomain AppleInterfaceStyleSwitchesAutomatically -bool fal
 defaults write NSGlobalDomain AppleAccentColor -int -1
 defaults write NSGlobalDomain AppleAquaColorVariant -int 6
 
+# Disable font smoothing for crisp, thin text. Ideal on Retina (MBP built-in)
+# and the preferred look on the OLED ultrawide too. Font smoothing is read
+# per-host (keyed to the machine's hardware UUID), so set both scopes to keep
+# every machine consistent. Applies after logout.
+defaults write NSGlobalDomain AppleFontSmoothing -int 0
+defaults -currentHost write -g AppleFontSmoothing -int 0
+
 # Solid (non-translucent) menus/Dock render true black instead of grey.
 # Note: com.apple.universalaccess is cached by the accessibility daemon, so
 # this and reduceMotion below only take effect after a logout/login.
