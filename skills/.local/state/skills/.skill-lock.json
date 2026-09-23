@@ -168,6 +168,7 @@
     "findSkillsPrompt": true
   },
   "lastSelectedAgents": [
-    "claude-code"
+    "claude-code",
+    "codex"
   ]
 }

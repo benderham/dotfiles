@@ -137,7 +137,8 @@ Requires the 1Password app with SSH agent enabled, the 1Password CLI, and an SSH
 A curated set of Claude skills is version-controlled here for reproducibility across
 machines. The lockfile (`skills/.local/state/skills/.skill-lock.json`) is stowed to
 `~/.local/state/skills/.skill-lock.json` and pins each skill to a source repo, so any
-machine restores the same set.
+machine restores the same set. It targets both `claude-code` and `codex`
+(`lastSelectedAgents`); the restore installs into whichever agents are present.
 
 ### Install
 
@@ -175,26 +176,27 @@ git add skills/.local/state/skills/.skill-lock.json && git commit -m "chore: upd
 
 Some tools are **plugins**, not plain skills — they ship SessionStart hooks (always-on
 activation), statuslines, and slash commands that a bare `SKILL.md` install would drop. So
-they can't live in the skills lockfile; `install-plugins.sh` (Phase 10) installs them
-per-agent via each agent's plugin CLI, for whichever of `claude`/`codex` is present:
+they can't live in the skills lockfile; `install-plugins.sh` (Phase 10) installs them for
+whichever of `claude`/`codex` is present. Install paths differ per agent:
 
-| Plugin | Marketplace | Why a plugin |
+| Plugin | Claude Code | Codex |
 | --- | --- | --- |
-| ponytail | `DietrichGebert/ponytail` | always-on minimalism (hook + statusline + commands) |
-| caveman | `JuliusBrussee/caveman` | always-on terse prose (hook) |
-| mattpocock-skills | `anthropics/claude-plugins-official` | engineering/productivity skills collection |
+| ponytail | `claude plugin install ponytail@ponytail` | native `codex plugin add ponytail@ponytail` |
+| caveman | `claude plugin install caveman@caveman` | `npx skills add JuliusBrussee/caveman -a codex` |
+| mattpocock-skills | `claude plugin install mattpocock-skills@claude-plugins-official` | `npx skills add mattpocock/skills -a codex` |
 
 ```bash
 ~/.dotfiles/scripts/install-plugins.sh   # installs for claude and/or codex, whichever exist
 ```
 
-Claude Code uses `claude plugin install <plugin>@<marketplace>`; Codex uses `codex plugin
-add …`. Each is attempted with `|| warn`, so an agent that doesn't support a given plugin
-skips cleanly.
+Only ponytail has a native Codex plugin; caveman and mattpocock have no native Codex plugin
+yet, so on Codex they install via the cross-agent skills registry (`npx skills add`, needs
+`node`/`npx` on PATH — mise provides it). Each step is `|| warn`, so unsupported combos skip
+cleanly.
 
-> Lifecycle hooks need `node` on PATH (mise provides it). Claude Code may require confirming
-> a trust prompt — if the CLI can't auto-accept, run `/plugin install <plugin>@<marketplace>`
-> in Claude Code. In Codex, run `/hooks` to trust hooks after install.
+> Lifecycle hooks need `node` on PATH. Claude Code may require confirming a trust prompt — if
+> the CLI can't auto-accept, run `/plugin install <plugin>@<marketplace>` in Claude Code. In
+> Codex, run `/hooks` to trust hooks after install.
 
 ## rtk
 
