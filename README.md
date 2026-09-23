@@ -36,7 +36,7 @@ Only Phase 1 (Homebrew) is mandatory — everything else depends on the tools it
 | 7     | `setup-1password.sh`      | yes       | SSH agent + Git signing via 1Password                     |
 | 8     | `install-rtk.sh`          | yes       | Link rtk filters, wire rtk into Claude Code + Codex        |
 | 9     | `install-skills.sh`       | yes       | Restore pinned Claude skills from the lockfile             |
-| 10    | `install-ponytail.sh`     | yes       | Install the ponytail plugin for Claude Code / Codex        |
+| 10    | `install-plugins.sh`      | yes       | Install agent plugins (ponytail, caveman, mattpocock) per agent |
 
 Failed runs preserve `setup-YYYYMMDD-HHMMSS.log` in the repo root and print the path. Successful runs clean up.
 
@@ -171,24 +171,30 @@ git add skills/.local/state/skills/.skill-lock.json && git commit -m "chore: upd
 > lockfile, or it loads twice. First-party/Anthropic plugins (e.g. cloudflare, dataviz)
 > aren't GitHub skills and stay as plugins.
 
-## ponytail
+## Agent plugins
 
-[ponytail](https://github.com/DietrichGebert/ponytail) is a hook-driven plugin (always-on
-activation, statusline, `/ponytail` commands) — so unlike the skills above it can't live in
-the skills lockfile; it's installed per-agent via each agent's plugin CLI.
+Some tools are **plugins**, not plain skills — they ship SessionStart hooks (always-on
+activation), statuslines, and slash commands that a bare `SKILL.md` install would drop. So
+they can't live in the skills lockfile; `install-plugins.sh` (Phase 10) installs them
+per-agent via each agent's plugin CLI, for whichever of `claude`/`codex` is present:
 
-`install-ponytail.sh` (Phase 10) installs it for whichever agents are present:
-
-- **Claude Code**: `claude plugin marketplace add DietrichGebert/ponytail` + `claude plugin install ponytail@ponytail`
-- **Codex**: `codex plugin marketplace add DietrichGebert/ponytail` + `codex plugin add ponytail@ponytail`
+| Plugin | Marketplace | Why a plugin |
+| --- | --- | --- |
+| ponytail | `DietrichGebert/ponytail` | always-on minimalism (hook + statusline + commands) |
+| caveman | `JuliusBrussee/caveman` | always-on terse prose (hook) |
+| mattpocock-skills | `anthropics/claude-plugins-official` | engineering/productivity skills collection |
 
 ```bash
-~/.dotfiles/scripts/install-ponytail.sh   # installs for claude and/or codex, whichever exist
+~/.dotfiles/scripts/install-plugins.sh   # installs for claude and/or codex, whichever exist
 ```
 
-> Its lifecycle hooks need `node` on PATH (mise provides it). Claude Code may require
-> confirming a trust prompt — if the CLI install can't auto-accept, run `/plugin install
-> ponytail@ponytail` in Claude Code. In Codex, run `/hooks` to trust its hooks after install.
+Claude Code uses `claude plugin install <plugin>@<marketplace>`; Codex uses `codex plugin
+add …`. Each is attempted with `|| warn`, so an agent that doesn't support a given plugin
+skips cleanly.
+
+> Lifecycle hooks need `node` on PATH (mise provides it). Claude Code may require confirming
+> a trust prompt — if the CLI can't auto-accept, run `/plugin install <plugin>@<marketplace>`
+> in Claude Code. In Codex, run `/hooks` to trust hooks after install.
 
 ## rtk
 
