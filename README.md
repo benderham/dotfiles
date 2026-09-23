@@ -1,143 +1,123 @@
-# Dotfiles Setup
+# Dotfiles
 
-This repository contains the dotfiles for my macOS system. It includes configurations for terminal, shell, and various development tools.
+macOS dotfiles managed with [GNU Stow](https://www.gnu.org/software/stow/).
+Designed to be portable across work and personal machines: identity is split
+via git `includeIf`, GUI apps are opt-in, and per-machine tweaks live in an
+untracked local file.
 
-## Installation
+## Quick start
 
-### Remote Installation
-
-You can run the setup script directly from this repository using `curl`. This will:
-
-- Clone the dotfiles repository if not already cloned
-- Install Homebrew if it is not already installed
-- Install dependencies from the Brewfile
-- Symlink dotfiles to their correct locations using GNU Stow
-
-To execute the script remotely:
+Fresh Mac:
 
 ```bash
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/benderham/dotfiles/main/setup.sh)"
 ```
 
-### Local Installation
-
-If you've already cloned the repository, you can run the setup script locally:
+Repo already cloned:
 
 ```bash
-# Make the script executable first
-chmod +x ~/.dotfiles/setup.sh
-
-# Run the script
 ~/.dotfiles/setup.sh
 ```
 
-### Manual Steps
+## How it works
 
-If any issues occur while running the script, or if you prefer a manual setup, follow these steps:
+`setup.sh` runs each phase as a separate script under `scripts/`. Any script can be re-run on its own.
 
-#### Install Homebrew (if not already installed)
+Only Phase 1 (Homebrew) is mandatory — everything else depends on the tools it installs. Every other phase prompts before running: hit Enter to accept (the default) or answer `n` to skip. That makes re-running setup for a single phase painless — just skip past the ones you don't need.
+
+| Phase | Script                    | Optional? | What it does                                              |
+| ----- | ------------------------- | --------- | --------------------------------------------------------- |
+| 1     | `install-homebrew.sh`     | no        | Install or update Homebrew                                |
+| 2     | `install-brewfile.sh`     | yes       | Required Brewfile, then `fzf` picker for optional entries |
+| 3     | `install-stow.sh`         | yes       | Symlink configs from top-level dirs into `$HOME`          |
+| 4     | `install-bat-themes.sh`   | yes       | Download Catppuccin theme, rebuild bat cache              |
+| 5     | `setup-macos-defaults.sh` | yes       | macOS defaults (appearance/OLED, Dock, Finder, keyboard)  |
+| 6     | `setup-1password.sh`      | yes       | SSH agent + Git signing via 1Password                     |
+
+Failed runs preserve `setup-YYYYMMDD-HHMMSS.log` in the repo root and print the path. Successful runs clean up.
+
+## Brewfile
+
+`Brewfile` is bootstrap-only — just the CLI tools needed for a working shell and to run the installer itself (`git`, `stow`, `mise`, `zsh`, `starship`, `fzf`, `zoxide`, `eza`, `bat`, `ripgrep`, `fd`, `mas`). Everything else — GUI apps, fonts, and situational CLIs — lives in `Brewfile.optional` and is chosen from an `fzf` checklist picker.
 
 ```bash
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+~/.dotfiles/scripts/install-brewfile.sh         # required + picker
+~/.dotfiles/scripts/install-brewfile.sh --all   # required + all optional
+~/.dotfiles/scripts/install-brewfile.sh --none  # required only
 ```
 
-#### Install Brewfile dependencies
+`Brewfile.optional` format:
 
-```bash
-# Navigate to the dotfiles directory
-cd ~/.dotfiles
-
-# Install dependencies from the Brewfile (using the specific file path)
-brew bundle --file=~/.dotfiles/Brewfile
+```text
+brew:doggo                       # modern DNS client
+cask:ghostty                     # terminal emulator
+tap:owner/repo
+mas:Harvest=506189836
 ```
 
-#### Symlink the dotfiles using GNU Stow
+Selections feed into `brew bundle --file=-`.
+
+### Maintenance
 
 ```bash
-cd ~/.dotfiles
-stow home_files
-```
-
-### Updating Brewfile
-
-Current packages in the `Brewfile`:
-
-- `bat` - `cat` clone with syntax highlighting and Git integration.
-- `curl` - Command-line tool for transferring data with URLs.
-- `doggo` - Modern DNS lookup client for quick DNS queries.
-- `eza` - Modern replacement for `ls` with icons and git info.
-- `fd` - Fast, user-friendly alternative to `find`.
-- `fzf` - Fuzzy finder for files, command history, and more.
-- `gh` - GitHub CLI for issues, PRs, and repo workflows.
-- `git` - Distributed version control system.
-- `imagemagick` - Tools for image conversion and manipulation.
-- `lazygit` - Terminal UI for common Git operations.
-- `mas` - CLI for installing apps from the Mac App Store.
-- `mise` - Runtime/version manager for languages and tools.
-- `ripgrep` - Extremely fast recursive text search (`rg`).
-- `starship` - Cross-shell, customizable prompt.
-- `stow` - Symlink farm manager for dotfiles.
-- `trash` - CLI that moves files to Trash instead of deleting permanently.
-- `wget` - Non-interactive network downloader.
-- `yazi` - Fast terminal file manager.
-- `zoxide` - Smarter `cd` command that learns your habits.
-- `zsh` - Z shell.
-
-Current apps in the `Brewfile` (`cask`):
-
-- `figma` - Collaborative interface design and prototyping app.
-- `firefox@developer-edition` - Firefox build with developer-focused tools and features.
-- `font-fira-code-nerd-font` - Fira Code Nerd Font with programming ligatures and patched icons.
-- `ghostty` - Fast, modern GPU-accelerated terminal emulator.
-- `google-chrome` - Google’s web browser.
-- `insomnia` - HTTP and GraphQL Client.
-- `logi-options+` - Logitech utility for customizing supported mice, keyboards, and device settings.
-- `logitune` - Logitech app for managing webcams, headsets, and video collaboration device settings.
-- `notion` - All-in-one workspace for notes, docs, and project management.
-- `notion-calendar` - Calendar app integrated with Notion workflows.
-- `raycast` - Spotlight-style launcher and productivity command palette.
-- `slack` - Team communication and collaboration app.
-- `visual-studio-code` - Code editor for development workflows.
-
-Current App Store apps in the `Brewfile` (`mas`):
-
-- `Harvest` (`506189836`) - Time tracking app for logging work and billing hours.
-
-To update the Brewfile with any new dependencies, run:
-
-```bash
-brew bundle dump --force --no-vscode --file=~/.dotfiles/Brewfile
-```
-
-To remove any installed packages not listed in the Brewfile, run:
-
-```bash
+# Remove anything not in Brewfile (ignores Brewfile.optional)
 brew bundle cleanup --force --file=~/.dotfiles/Brewfile
 ```
 
-This command will uninstall all packages, casks, or taps not defined in the `Brewfile`, keeping your system aligned with the `Brewfile` contents.
+> **Warning:** avoid `brew bundle dump --file=~/.dotfiles/Brewfile` — it rewrites the
+> file from _everything_ currently installed, which re-bloats the bootstrap-only
+> `Brewfile` and undoes the split. The `bdump` alias dumps to `/tmp/Brewfile.dump`
+> instead; cherry-pick anything new into `Brewfile.optional` by hand.
 
-**Note:** VS Code extensions are excluded from the Brewfile (via `--no-vscode` flag) and should be managed through VS Code's built-in Settings Sync feature instead.
+> **Warning:** `brew bundle cleanup` only consults the required `Brewfile`, so it
+> will uninstall everything you picked from `Brewfile.optional`. Treat it as a reset
+> back to the bootstrap baseline — re-run the picker (or `install-brewfile.sh --all`)
+> to restore your optional packages afterwards.
 
-## 1Password Setup
+VS Code extensions sync through Settings Sync, hence `--no-vscode`.
 
-Optional setup for using 1Password as your SSH agent and for Git commit signing.
+## Adding a new config
 
-### Automatic Setup
-
-Run the setup script:
+Each top-level dir is a stow package, except `scripts`, `.git`, and `.stow-backups`:
 
 ```bash
-~/.dotfiles/scripts/setup-1password.sh
+mkdir -p newtool/.config/newtool
+echo "my config" > newtool/.config/newtool/config.toml
+stow -t ~ newtool
+git add newtool && git commit -m "feat: add newtool config"
 ```
 
-This will:
+## Machine-specific config
 
-- Configure SSH to use 1Password agent
-- Set up Git commit signing (requires 1Password CLI)
+Anything that should only run on one machine (per-machine tool inits, PATH tweaks,
+work-only aliases) goes in `~/.config/zsh/.zshrc.local`, which `.zshrc` sources last and
+`.gitignore` keeps untracked. Bootstrap it from the tracked template:
 
-### Requirements
+```bash
+cp ~/.config/zsh/.zshrc.local.example ~/.config/zsh/.zshrc.local
+```
 
-- 1Password app with SSH agent enabled
-- For Git signing: 1Password CLI (`brew install --cask 1password/tap/1password-cli`)
-- SSH key stored in 1Password (customize script if item name isn't "GitHub key")
+## 1Password
+
+`setup-1password.sh` (optional) writes:
+
+- 1Password SSH agent socket into `~/.ssh/config`
+- `~/.gitconfig-1password-ssh` for SSH-based commit signing (sourced by the main gitconfig)
+
+Requires the 1Password app with SSH agent enabled, the 1Password CLI, and an SSH key item named `GitHub key`.
+
+## macOS defaults
+
+`setup-macos-defaults.sh` (optional) sets:
+
+- **Appearance (tuned for OLED):** force Dark mode permanently (dark pixels are physically off — less power, no burn-in); reduce transparency (solid black menus/Dock instead of grey); reduce motion; auto-hide the Dock and menu bar to remove the two permanent bright strips
+- Finder: show extensions, path bar, status bar; column view; folders on top; search current folder; new windows open at `$HOME`; no `.DS_Store` on network/USB
+- Dock: `tilesize=37`, hide recent apps, auto-hide
+- Keyboard: fast key repeat (2/15), no press-and-hold accent picker, full keyboard access in dialogs
+- Launch Services: no "Are you sure?" prompt for downloaded apps
+- Screenshots saved to `~/Downloads`
+- App Store: daily update check, auto-install
+
+> **Note:** reduce transparency and reduce motion write to `com.apple.universalaccess`,
+> which the accessibility daemon caches. They only take effect after a **logout/login**.
+> The rest apply immediately via `killall Dock`/`Finder`/`SystemUIServer`.
