@@ -8,8 +8,8 @@ setup-*.log
 # 1Password SSH git config -- never commit!
 git/.gitconfig-1password-ssh
 
-# Machine-specific work git identity -- never commit work details!
-git/.gitconfig-work
+# Machine-specific git identity (work machines) -- never commit work details!
+git/.gitconfig-machine
 
 # Zsh generates these at runtime -- never commit them
 zsh/.config/zsh/.zcompdump*

@@ -100,22 +100,25 @@ cp ~/.config/zsh/.zshrc.local.example ~/.config/zsh/.zshrc.local
 
 ## Git identity
 
-Identity is chosen by **where a repo lives**, so the same config works on every machine:
+The default identity is **per machine**, chosen by `setup-git.sh` (Phase 4), which
+prompts defaulting to **no**:
 
-- **Personal** is the default everywhere — `git/.gitconfig-personal` (tracked).
-- **Work** applies only to repos under `~/Sites/Work/`, via an `includeIf` that
-  loads `~/.gitconfig-work`. That file is **gitignored** and machine-specific, so work
-  details never get committed to this personal repo.
+- **Personal machine** (answer no): personal identity is the default everywhere —
+  personal email + personal 1Password signing (`git/.gitconfig-personal` +
+  `~/.gitconfig-1password-ssh`). No work file exists.
+- **Work machine** (answer yes): the script writes a **gitignored**
+  `~/.gitconfig-machine` that makes **work the default** on that machine (work email,
+  optional work signing key), and scopes personal — including 1Password signing — to
+  repos under `~/Sites/Personal/`.
 
-`setup-git.sh` (Phase 4) prompts — defaulting to **no** — and only writes
-`~/.gitconfig-work` when you confirm this is a work machine. On a personal machine the
-work file never exists, so work identity never applies. Re-run it any time:
+So a work laptop never signs work commits with your personal 1Password key and never
+falls back to your personal email; and no work details are ever committed to this repo.
+
+Re-run any time (it can also revert a machine back to the personal default):
 
 ```bash
 ~/.dotfiles/scripts/setup-git.sh
 ```
-
-Clone work repos under `~/Sites/Work/` for the work identity to take effect.
 
 ## 1Password
 
