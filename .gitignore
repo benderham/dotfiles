@@ -2,6 +2,9 @@
 .stow-backups/
 Brewfile.lock.json
 
+# Setup logs kept on failed runs
+setup-*.log
+
 # 1Password SSH git config -- never commit!
 git/.gitconfig-1password-ssh
 
@@ -10,3 +13,6 @@ zsh/.config/zsh/.zcompdump*
 zsh/.config/zsh/.zcompcache/
 zsh/.config/zsh/.zsh_history
 zsh/.config/zsh/.zsh_sessions/
+
+# Machine-specific zsh config (bootstrap from .zshrc.local.example)
+zsh/.config/zsh/.zshrc.local

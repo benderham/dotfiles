@@ -19,3 +19,8 @@ node_modules
 # Local mise override
 .mise.local.toml
 
+# Agent/tooling working dirs and local overrides
+.serena/
+.worktrees/
+**/.claude/settings.local.json
+

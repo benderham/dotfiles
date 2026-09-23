@@ -6,6 +6,7 @@
 [core]
 	editor = code --wait									# Use VS Code as default editor, wait for it to close before continuing
 	excludesfile = ~/.gitignore_global		# Global .gitignore file
+	pager = less -FRX
 
 [column]
 	ui = auto	# Show columns in Git output where supported
@@ -58,12 +59,16 @@
 [include]
 	path = ~/.gitconfig-personal
 
-# Work-specific settings
-[includeIf "gitdir:~/Sites/work"]
-	path = ~/.gitconfig-work
+# Employer-specific settings
+[includeIf "gitdir:~/Sites/[EmployerName]/**"]
+	path = ~/.gitconfig-[EmployerName]
 
 # 1Password SSH config
 [include]
 	path = ~/.gitconfig-1password-ssh
+
 [advice]
 	skippedCherryPicks = false
+
+[gpg "ssh"]
+	allowedSignersFile = ~/.ssh/allowed_signers
