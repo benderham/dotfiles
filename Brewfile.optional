@@ -23,15 +23,16 @@ cask:font-fira-code-nerd-font                # Fira Code (Nerd Font) — used by
 
 # -- Apps ---------------------------------------------------------------------
 cask:chatgpt                                 # ChatGPT desktop app
+cask:claude                                  # Claude desktop app
 cask:codex                                   # OpenAI Codex coding agent (CLI)
 cask:firefox@developer-edition               # browser
 cask:ghostty                                 # terminal emulator (config in ghostty/)
 cask:google-chrome                           # browser
 cask:insomnia                                # HTTP & GraphQL client
-# cask:logi-options+                         # Logitech mouse/keyboard settings — enable if needed
+cask:logi-options+                           # Logitech mouse/keyboard settings
 cask:logitune                                # Logitech webcam/headset settings
 cask:notion                                  # notes & docs
 cask:notion-calendar                         # calendar
 cask:raycast                                 # launcher & productivity
-# cask:slack                                 # team chat — enable if needed
+cask:slack                                   # team chat
 cask:visual-studio-code                      # editor (git core.editor = code --wait)
