@@ -27,7 +27,7 @@ fi
 
 if ! command_exists op || ! op account list >/dev/null 2>&1; then
 	warn "1Password CLI not available or not signed in. Git signing setup skipped."
-	warn "Install with: brew install --cask 1password/tap/1password-cli"
+	warn "Install with: brew install --cask 1password-cli"
 	exit 0
 fi
 
