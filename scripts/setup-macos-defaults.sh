@@ -30,6 +30,10 @@ defaults write com.apple.dock autohide -bool true
 defaults write NSGlobalDomain AppleInterfaceStyle -string "Dark"
 defaults write NSGlobalDomain AppleInterfaceStyleSwitchesAutomatically -bool false
 
+# Graphite (grey) accent instead of a saturated colour. Applies after logout.
+defaults write NSGlobalDomain AppleAccentColor -int -1
+defaults write NSGlobalDomain AppleAquaColorVariant -int 6
+
 # Solid (non-translucent) menus/Dock render true black instead of grey.
 # Note: com.apple.universalaccess is cached by the accessibility daemon, so
 # this and reduceMotion below only take effect after a logout/login.
