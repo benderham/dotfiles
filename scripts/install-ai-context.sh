@@ -45,7 +45,13 @@ BLOCK_END="# <<< ai-context (managed) <<<"
 mkdir -p "$CTX_DIR"
 if [ ! -d "$REPO_DIR/.git" ]; then
 	info "Cloning ai-context..."
-	git clone "$REPO_URL" "$REPO_DIR"
+	# Private repo: on a fresh machine there may be no GitHub credential yet.
+	# Skip gracefully with a hint instead of aborting the whole setup run.
+	if ! git clone "$REPO_URL" "$REPO_DIR"; then
+		warn "Could not clone ai-context. If it is private, authenticate to GitHub first"
+		warn "(SSH via 1Password, or 'gh auth login'), then re-run: ~/.dotfiles/scripts/install-ai-context.sh"
+		exit 0
+	fi
 else
 	info "Updating ai-context..."
 	git -C "$REPO_DIR" pull --ff-only || warn "ai-context pull failed; using existing checkout."
