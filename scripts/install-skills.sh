@@ -5,6 +5,14 @@ source "$(cd "$(dirname "$0")" && pwd)/lib.sh"
 
 info "Setting up skills..."
 
+# Skills install into an agent's config dir, so there's nothing to do unless an
+# agent is present. Gate like the rtk and plugins phases.
+if ! command_exists claude && ! command_exists codex; then
+	warn "Neither claude nor codex found on PATH. Skipping skills."
+	warn "Install an agent, then re-run: ~/.dotfiles/scripts/install-skills.sh"
+	exit 0
+fi
+
 if ! command_exists mise; then
 	warn "mise not found. Skipping skills setup."
 	warn "Run this later after opening a new shell: pnpm dlx skills experimental_install"
