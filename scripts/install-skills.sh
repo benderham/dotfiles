@@ -5,48 +5,50 @@ source "$(cd "$(dirname "$0")" && pwd)/lib.sh"
 
 info "Setting up skills..."
 
-# Skills install into an agent's config dir, so there's nothing to do unless an
-# agent is present. Gate like the rtk and plugins phases.
-if ! command_exists claude && ! command_exists codex; then
+# Curated global skills, installed with the `skills` CLI (via npx) into the
+# agents present. Format: "owner/repo|comma,separated,skill,names".
+#
+# This is the source of truth: skills track their source repo's latest, like the
+# agent plugins do. There is no version lockfile (the CLI dropped the global
+# lockfile model). Add or remove skills by editing this list and re-running.
+SKILLS=(
+	"antfu/skills|pnpm,vite,vitest"
+	"webpro/skills|configure-knip,optimize-javascript"
+	"vercel-labs/agent-skills|vercel-react-best-practices,vercel-composition-patterns,vercel-react-view-transitions,web-design-guidelines"
+	"vercel-labs/agent-browser|agent-browser"
+	"addyosmani/web-quality-skills|accessibility,core-web-vitals,performance,seo,web-quality-audit,best-practices"
+	"GoogleChrome/modern-web-guidance|modern-web-guidance"
+	"cursor/plugins|thermo-nuclear-code-quality-review"
+)
+
+# Target whichever agents are installed.
+agents=""
+command_exists claude && agents="claude-code"
+command_exists codex && agents="${agents:+$agents,}codex"
+if [ -z "$agents" ]; then
 	warn "Neither claude nor codex found on PATH. Skipping skills."
 	warn "Install an agent, then re-run: ~/.dotfiles/scripts/install-skills.sh"
 	exit 0
 fi
 
-if ! command_exists mise; then
-	warn "mise not found. Skipping skills setup."
-	warn "Run this later after opening a new shell: pnpm dlx skills experimental_install"
+# The skills CLI runs via npx, which needs Node (provided by mise).
+if command_exists mise; then
+	eval "$(mise activate bash)" 2>/dev/null || true
+	eval "$(mise hook-env)" 2>/dev/null || true
+	mise install >/dev/null 2>&1 || true
+fi
+if ! command_exists npx; then
+	warn "npx not available (need Node via mise). Open a new shell or run 'mise install', then re-run."
 	exit 0
 fi
 
-# Activate mise so runtimes (node, pnpm) are available in this script
-eval "$(mise activate bash)"
-eval "$(mise hook-env)"
+info "Installing curated skills for: $agents"
+for entry in "${SKILLS[@]}"; do
+	repo="${entry%%|*}"
+	names="${entry##*|}"
+	info "[$repo] $names"
+	npx --yes skills add -g "$repo" -s "$names" -a "$agents" -y \
+		|| warn "[$repo] some skills may have failed. List current names: npx skills add -g $repo -l"
+done
 
-info "Installing mise runtimes..."
-mise install
-
-if ! command_exists node; then
-	warn "Node.js not available via mise. Skipping skills setup."
-	warn "Run this later after opening a new shell: pnpm dlx skills experimental_install"
-	exit 0
-fi
-
-# Prepare pnpm via corepack (no global package manager install needed)
-if ! command_exists pnpm; then
-	info "Preparing pnpm via corepack..."
-	# Don't let a transient corepack failure abort the whole orchestrator —
-	# fall through to the `command_exists pnpm` check below.
-	corepack prepare pnpm@latest --activate || warn "corepack prepare failed."
-	eval "$(mise hook-env)" || true
-fi
-
-if ! command_exists pnpm; then
-	warn "pnpm not available via corepack. Skipping skills setup."
-	warn "Run this later after opening a new shell: pnpm dlx skills experimental_install"
-	exit 0
-fi
-
-info "Restoring skills from lockfile..."
-pnpm dlx skills experimental_install || warn "Skills restoration may have failed or was skipped."
 success "Skills setup complete."

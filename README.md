@@ -36,7 +36,7 @@ Only Phase 1 (Homebrew) is mandatory — everything else depends on the tools it
 | 7     | `setup-1password.sh`      | yes       | SSH agent + Git signing via 1Password                     |
 | 8     | `install-ai-context.sh`   | yes       | Deploy shared AI context (base + personal) to Claude Code + Codex |
 | 9     | `install-rtk.sh`          | yes       | Link rtk filters, wire rtk into Claude Code + Codex        |
-| 10    | `install-skills.sh`       | yes       | Restore pinned Claude skills from the lockfile             |
+| 10    | `install-skills.sh`       | yes       | Install curated agent skills via the `skills` CLI          |
 | 11    | `install-plugins.sh`      | yes       | Install agent plugins (ponytail, caveman, mattpocock) per agent |
 
 Failed runs preserve `setup-YYYYMMDD-HHMMSS.log` in the repo root and print the path. Successful runs clean up.
@@ -135,43 +135,38 @@ Requires the 1Password app with SSH agent enabled, the 1Password CLI, and an SSH
 
 ## Skills
 
-A curated set of Claude skills is version-controlled here for reproducibility across
-machines. The lockfile (`skills/.local/state/skills/.skill-lock.json`) is stowed to
-`~/.local/state/skills/.skill-lock.json` and pins each skill to a source repo, so any
-machine restores the same set. It targets both `claude-code` and `codex`
-(`lastSelectedAgents`); the restore installs into whichever agents are present.
+A curated set of agent skills is declared in `install-skills.sh` as a `SKILLS`
+list (source repo + skill names). The phase installs them globally with the
+`skills` CLI (via `npx`) into whichever agents are present (`claude-code`,
+`codex`). The list is the source of truth: skills track their source repo's
+latest, the same way the agent plugins do.
 
 ### Install
 
-`install-skills.sh` (Phase 10) activates mise, prepares `pnpm` via corepack, and runs the
-restore:
+`install-skills.sh` (Phase 10) ensures Node is available via mise, then installs
+each entry:
 
 ```bash
 ~/.dotfiles/scripts/install-skills.sh
-# or directly:
-pnpm dlx skills experimental_install
 ```
 
 ### Usage
 
 ```bash
-pnpm dlx skills experimental_install   # restore everything in the lockfile
-pnpm dlx skills add <owner>/<repo>     # add a skill (updates the lockfile)
-pnpm dlx skills                        # interactive picker / update
+npx skills list -g                       # what's installed globally
+npx skills add -g <owner>/<repo> -l      # list a repo's available skill names
+npx skills add -g <owner>/<repo> -s <a,b> -a claude-code,codex -y   # install
+npx skills remove -g -s <name> -a claude-code                       # remove
 ```
 
-After adding or updating skills, commit the changed lockfile:
+To change the curated set, edit the `SKILLS` list in `install-skills.sh`, re-run
+the phase, and commit the script.
 
-```bash
-git add skills/.local/state/skills/.skill-lock.json && git commit -m "chore: update skills"
-```
-
-> **Pinned, not auto-updated.** The lockfile trades automatic freshness for
-> reproducibility — you get the same skills on every machine, and update deliberately by
-> re-running the restore (which re-pins). This is separate from Claude Code **plugins**,
-> which update on their own. Don't manage the same skill via both a plugin and this
-> lockfile, or it loads twice. First-party/Anthropic plugins (e.g. cloudflare, dataviz)
-> aren't GitHub skills and stay as plugins.
+> **Tracks latest, not pinned.** The old global lockfile model was dropped by the
+> `skills` CLI, so there's no version pinning: skills follow their repo's latest,
+> like Claude Code **plugins** do. Don't manage the same skill via both a plugin
+> and this list, or it loads twice. First-party/Anthropic plugins (e.g. cloudflare,
+> dataviz) aren't GitHub skills and stay as plugins.
 
 ## Agent plugins
 
