@@ -229,10 +229,12 @@ This phase runs before rtk, which appends its own `@RTK.md` ref to that generate
 ~/.dotfiles/scripts/install-ai-context.sh   # re-run any time; idempotent
 ```
 
-> The repo is **private**, so the first clone needs a GitHub credential (SSH via
-> 1Password, or `gh auth login`). Without one the phase warns and skips rather than
-> aborting setup — authenticate, then re-run. If a broken empty checkout was left
-> behind, `rm -rf ~/.config/ai-context/repo` first.
+> The repo is **private** and cloned over SSH (via the 1Password SSH agent). The
+> phase first gates on GitHub auth: if `gh` isn't logged in it launches
+> `gh auth login` before continuing, and if `gh` isn't installed it skips with a
+> hint (pick it in the Brewfile picker). If the SSH clone itself fails, ensure your
+> key is on GitHub and the 1Password agent is running, then re-run. If a broken
+> empty checkout was left behind, `rm -rf ~/.config/ai-context/repo` first.
 
 ## rtk
 
