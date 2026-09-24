@@ -209,9 +209,16 @@ Shared, portable instructions for AI coding agents, kept in the private
 context into whichever agents are present:
 
 - **Every machine** gets the base `AGENTS.md`.
-- **Non-work machines** also get `personal.md` (a work machine is one where `setup-git.sh` wrote `~/.gitconfig-machine`).
+- **Personal machines** also get `personal.md`.
 - **Each machine** gets its own private `~/.config/ai-context/local.md` overlay, seeded once from `local.md.example` and never committed.
 - **Work machines** get the base only; work context is handled separately and manually.
+
+Work vs personal is decided by, in order: an explicit marker file
+(`~/.config/ai-context/work` forces work, `~/.config/ai-context/personal` forces
+personal), else the git identity signal (`~/.gitconfig-machine`, written by
+`setup-git.sh`). The marker lets a machine be classed independently of its git
+identity, e.g. a work AI account on a machine that keeps a personal git default:
+`touch ~/.config/ai-context/work`.
 
 Claude Code gets a managed `@import` block in `~/.claude/CLAUDE.md` (rewritten each
 run, content outside the block preserved). Codex has no import syntax, so
