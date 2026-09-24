@@ -44,8 +44,15 @@ defaults -currentHost write -g AppleFontSmoothing -int 0
 # Solid (non-translucent) menus/Dock render true black instead of grey.
 # Note: com.apple.universalaccess is cached by the accessibility daemon, so
 # this and reduceMotion below only take effect after a logout/login.
-defaults write com.apple.universalaccess reduceTransparency -bool true
-defaults write com.apple.universalaccess reduceMotion -bool true
+# com.apple.universalaccess is TCC-protected: `defaults write` fails unless the
+# terminal running setup has Full Disk Access. Don't let that abort the phase.
+ua_ok=true
+defaults write com.apple.universalaccess reduceTransparency -bool true 2>/dev/null || ua_ok=false
+defaults write com.apple.universalaccess reduceMotion -bool true 2>/dev/null || ua_ok=false
+if [ "$ua_ok" = false ]; then
+	warn "Skipped reduce transparency/motion: com.apple.universalaccess needs Full Disk Access."
+	warn "Grant your terminal Full Disk Access (System Settings > Privacy & Security), then re-run this phase."
+fi
 
 # Auto-hide the menu bar — removes the other permanent bright strip.
 defaults write NSGlobalDomain _HIHideMenuBar -bool true
