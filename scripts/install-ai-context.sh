@@ -74,11 +74,24 @@ if [ ! -e "$LOCAL" ]; then
 fi
 
 # -- Resolve the ordered context sources for this machine ----------------------
-# Work machine = the git identity phase wrote ~/.gitconfig-machine.
+# Decide work vs personal. An explicit marker in the ai-context config dir wins,
+# so a machine can be classed independently of its git identity (e.g. a work AI
+# account on a machine that defaults to a personal git identity). Otherwise fall
+# back to the git identity signal (~/.gitconfig-machine, written by setup-git.sh).
+if [ -f "$CTX_DIR/work" ]; then
+	is_work=true
+elif [ -f "$CTX_DIR/personal" ]; then
+	is_work=false
+elif [ -f "$HOME/.gitconfig-machine" ]; then
+	is_work=true
+else
+	is_work=false
+fi
+
 sources=("$BASE")
-if [ ! -f "$HOME/.gitconfig-machine" ] && [ -f "$PERSONAL" ]; then
+if [ "$is_work" = false ] && [ -f "$PERSONAL" ]; then
 	sources+=("$PERSONAL")
-	info "Non-work machine: including personal.md."
+	info "Personal machine: including personal.md."
 else
 	info "Work machine (or no personal.md): base only."
 fi
