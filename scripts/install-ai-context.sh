@@ -30,7 +30,7 @@ if ! command_exists claude && ! command_exists codex; then
 	exit 0
 fi
 
-REPO_URL="https://github.com/benderham/ai-context"
+REPO_URL="git@github.com:benderham/ai-context.git"
 CTX_DIR="$HOME/.config/ai-context"
 REPO_DIR="$CTX_DIR/repo"
 BASE="$REPO_DIR/AGENTS.md"
@@ -41,6 +41,25 @@ LOCAL="$CTX_DIR/local.md"
 BLOCK_BEGIN="# >>> ai-context (managed) >>>"
 BLOCK_END="# <<< ai-context (managed) <<<"
 
+# -- GitHub auth gate ----------------------------------------------------------
+# ai-context is private. Require GitHub auth before we clone or pull it. The
+# clone is over SSH (1Password's agent), but we still gate on `gh` login so a
+# fresh machine is definitely set up with GitHub access before continuing.
+if ! command_exists gh; then
+	warn "gh not installed; cannot verify GitHub auth. Pick 'gh' in the Brewfile picker"
+	warn "(or ensure SSH access to GitHub), then re-run: ~/.dotfiles/scripts/install-ai-context.sh"
+	exit 0
+fi
+if ! gh auth status >/dev/null 2>&1; then
+	warn "GitHub login required for the private ai-context repo."
+	info "Launching 'gh auth login' (choose SSH to match the clone transport)..."
+	if ! gh auth login; then
+		warn "Login not completed. Log in and re-run: gh auth login && ~/.dotfiles/scripts/install-ai-context.sh"
+		exit 0
+	fi
+fi
+info "GitHub authenticated."
+
 # -- Clone / update the repo ---------------------------------------------------
 mkdir -p "$CTX_DIR"
 if [ ! -d "$REPO_DIR/.git" ]; then
@@ -48,8 +67,8 @@ if [ ! -d "$REPO_DIR/.git" ]; then
 	# Private repo: on a fresh machine there may be no GitHub credential yet.
 	# Skip gracefully with a hint instead of aborting the whole setup run.
 	if ! git clone "$REPO_URL" "$REPO_DIR"; then
-		warn "Could not clone ai-context. If it is private, authenticate to GitHub first"
-		warn "(SSH via 1Password, or 'gh auth login'), then re-run: ~/.dotfiles/scripts/install-ai-context.sh"
+		warn "Could not clone ai-context over SSH. Ensure your SSH key is added to GitHub"
+		warn "and the 1Password SSH agent is running, then re-run: ~/.dotfiles/scripts/install-ai-context.sh"
 		exit 0
 	fi
 else
