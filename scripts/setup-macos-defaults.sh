@@ -18,6 +18,25 @@ defaults write NSGlobalDomain NSAutomaticQuoteSubstitutionEnabled -bool false
 defaults write NSGlobalDomain NSAutomaticDashSubstitutionEnabled -bool false
 defaults write NSGlobalDomain NSAutomaticPeriodSubstitutionEnabled -bool false
 
+# -- Trackpad ----------------------------------------------------------------
+
+# Tap with one finger to click
+defaults write com.apple.AppleMultitouchTrackpad Clicking -bool true
+defaults -currentHost write NSGlobalDomain com.apple.mouse.tapBehavior -int 1
+defaults write NSGlobalDomain com.apple.mouse.tapBehavior -int 1
+
+# Three-finger drag
+# Accessibility setting: 1 = three-finger drag
+defaults write com.apple.AppleMultitouchTrackpad TrackpadThreeFingerDrag -bool true
+defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad TrackpadThreeFingerDrag -bool true
+
+# Configure related drag settings to avoid conflicts
+defaults write com.apple.AppleMultitouchTrackpad Dragging -bool false
+defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad Dragging -bool false
+defaults write com.apple.AppleMultitouchTrackpad DragLock -bool false
+defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad DragLock -bool false
+
+
 # -- Dock --------------------------------------------------------------------
 defaults write com.apple.dock tilesize -int 48
 defaults write com.apple.dock show-recents -bool false
@@ -39,6 +58,12 @@ defaults write com.apple.dock minimize-to-application -bool true
 # Keep Spaces in a predictable order rather than rearranging them based on
 # recent use.
 defaults write com.apple.dock mru-spaces -bool false
+
+# -- Hot Corners -------------------------------------------------------------
+
+# Bottom-right: Show Desktop
+defaults write com.apple.dock wvous-br-corner -int 4
+defaults write com.apple.dock wvous-br-modifier -int 0
 
 # -- Appearance --------------------------------------------------------------
 # Prefer permanent Dark Mode. This also reduces persistent bright UI regions
