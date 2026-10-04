@@ -5,28 +5,45 @@ source "$(cd "$(dirname "$0")" && pwd)/lib.sh"
 
 info "Applying macOS defaults..."
 
-# -- General / launch services -----------------------------------------------
-# Skip the "Are you sure you want to open this app?" prompt for downloaded binaries
-defaults write com.apple.LaunchServices LSQuarantine -bool false
-
-# -- Keyboard ----------------------------------------------------------------
+# -- Keyboard / text ---------------------------------------------------------
 defaults write NSGlobalDomain KeyRepeat -int 2
 defaults write NSGlobalDomain InitialKeyRepeat -int 15
 defaults write NSGlobalDomain ApplePressAndHoldEnabled -bool false
+
 # Tab through all controls in dialogs, not just text fields
 defaults write NSGlobalDomain AppleKeyboardUIMode -int 3
 
+# Disable smart punctuation. Particularly useful when working with code.
+defaults write NSGlobalDomain NSAutomaticQuoteSubstitutionEnabled -bool false
+defaults write NSGlobalDomain NSAutomaticDashSubstitutionEnabled -bool false
+defaults write NSGlobalDomain NSAutomaticPeriodSubstitutionEnabled -bool false
+
 # -- Dock --------------------------------------------------------------------
-defaults write com.apple.dock tilesize -int 37
+defaults write com.apple.dock tilesize -int 48
 defaults write com.apple.dock show-recents -bool false
-# Auto-hide the Dock. On OLED a permanent bright Dock strip is a burn-in risk.
+
+# Auto-hide persistent UI when not in use. Particularly useful with OLED
+# displays.
 defaults write com.apple.dock autohide -bool true
 
-# -- Appearance (tuned for OLED) ---------------------------------------------
-# Force Dark permanently. On OLED, dark pixels are physically off: less power,
-# no backlight bleed, and far less burn-in than a bright Light-mode raster.
-# AppleInterfaceStyleSwitchesAutomatically must be false, or the scheduler
-# overrides the fixed style.
+# Remove the delay before the hidden Dock appears, while retaining a short
+# animation so it doesn't feel abrupt.
+defaults write com.apple.dock autohide-delay -float 0
+defaults write com.apple.dock autohide-time-modifier -float 0.25
+
+# Minimise windows into their application icon instead of creating additional
+# Dock items.
+defaults write com.apple.dock minimize-to-application -bool true
+
+# -- Mission Control / Spaces ------------------------------------------------
+# Keep Spaces in a predictable order rather than rearranging them based on
+# recent use.
+defaults write com.apple.dock mru-spaces -bool false
+
+# -- Appearance --------------------------------------------------------------
+# Prefer permanent Dark Mode. This also reduces persistent bright UI regions
+# when using the OLED ultrawide. AppleInterfaceStyleSwitchesAutomatically must
+# be false, or the scheduler overrides the fixed style.
 defaults write NSGlobalDomain AppleInterfaceStyle -string "Dark"
 defaults write NSGlobalDomain AppleInterfaceStyleSwitchesAutomatically -bool false
 
@@ -34,14 +51,14 @@ defaults write NSGlobalDomain AppleInterfaceStyleSwitchesAutomatically -bool fal
 defaults write NSGlobalDomain AppleAccentColor -int -1
 defaults write NSGlobalDomain AppleAquaColorVariant -int 6
 
-# Disable font smoothing for crisp, thin text. Ideal on Retina (MBP built-in)
-# and the preferred look on the OLED ultrawide too. Font smoothing is read
-# per-host (keyed to the machine's hardware UUID), so set both scopes to keep
-# every machine consistent. Applies after logout.
+# Disable font smoothing for crisp, thin text. Preferred on Retina and the OLED
+# ultrawide. Font smoothing is read per-host (keyed to the machine's hardware
+# UUID), so set both scopes to keep every machine consistent. Applies after
+# logout.
 defaults write NSGlobalDomain AppleFontSmoothing -int 0
 defaults -currentHost write -g AppleFontSmoothing -int 0
 
-# Solid (non-translucent) menus/Dock render true black instead of grey.
+# Solid (non-translucent) menus and Dock.
 # Note: com.apple.universalaccess is cached by the accessibility daemon, so
 # this and reduceMotion below only take effect after a logout/login.
 # com.apple.universalaccess is TCC-protected: `defaults write` fails unless the
@@ -54,8 +71,12 @@ if [ "$ua_ok" = false ]; then
 	warn "Grant your terminal Full Disk Access (System Settings > Privacy & Security), then re-run this phase."
 fi
 
-# Auto-hide the menu bar — removes the other permanent bright strip.
+# Auto-hide the menu bar when not in use.
 defaults write NSGlobalDomain _HIHideMenuBar -bool true
+
+# -- Menu bar ----------------------------------------------------------------
+# Always show battery percentage alongside the battery icon.
+defaults write com.apple.controlcenter BatteryShowPercentage -bool true
 
 # -- Finder ------------------------------------------------------------------
 defaults write com.apple.finder AppleShowAllExtensions -bool true
@@ -74,17 +95,28 @@ defaults write com.apple.finder FXDefaultSearchScope -string "SCcf"
 # New Finder windows open at $HOME
 defaults write com.apple.finder NewWindowTarget -string "PfHm"
 
+# Don't warn when changing a file extension
+defaults write com.apple.finder FXEnableExtensionChangeWarning -bool false
+
 # Stop polluting network and USB drives with .DS_Store
 defaults write com.apple.desktopservices DSDontWriteNetworkStores -bool true
 defaults write com.apple.desktopservices DSDontWriteUSBStores -bool true
 
+# -- Save / print dialogs ----------------------------------------------------
+# Show the full filesystem browser instead of the compact save dialog.
+defaults write NSGlobalDomain NSNavPanelExpandedStateForSaveMode -bool true
+defaults write NSGlobalDomain NSNavPanelExpandedStateForSaveMode2 -bool true
+
+# Show the expanded print dialog by default.
+defaults write NSGlobalDomain PMPrintingExpandedStateForPrint -bool true
+defaults write NSGlobalDomain PMPrintingExpandedStateForPrint2 -bool true
+
 # -- Screenshots -------------------------------------------------------------
 mkdir -p "$HOME/Downloads"
-defaults write com.apple.screencapture location -string "$HOME/Downloads"
+defaults write com.apple.screencapture location -string "$HOME/Screenshots"
 
-# -- Software updates --------------------------------------------------------
-# Daily check + auto-install for App Store apps
-defaults write com.apple.SoftwareUpdate ScheduleFrequency -int 1
+# -- App Store ---------------------------------------------------------------
+# Automatically install updates for App Store applications.
 defaults write com.apple.commerce AutoUpdate -bool true
 
 # -- Apply -------------------------------------------------------------------
