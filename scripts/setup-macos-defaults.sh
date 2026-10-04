@@ -137,7 +137,7 @@ defaults write NSGlobalDomain PMPrintingExpandedStateForPrint -bool true
 defaults write NSGlobalDomain PMPrintingExpandedStateForPrint2 -bool true
 
 # -- Screenshots -------------------------------------------------------------
-mkdir -p "$HOME/Downloads"
+mkdir -p "$HOME/Screenshots"
 defaults write com.apple.screencapture location -string "$HOME/Screenshots"
 
 # -- App Store ---------------------------------------------------------------
