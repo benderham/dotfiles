@@ -25,19 +25,19 @@ Repo already cloned:
 
 Only Phase 1 (Homebrew) is mandatory — everything else depends on the tools it installs. Every other phase prompts before running: hit Enter to accept (the default) or answer `n` to skip. That makes re-running setup for a single phase painless — just skip past the ones you don't need.
 
-| Phase | Script                    | Optional? | What it does                                              |
-| ----- | ------------------------- | --------- | --------------------------------------------------------- |
-| 1     | `install-homebrew.sh`     | no        | Install or update Homebrew                                |
-| 2     | `install-brewfile.sh`     | yes       | Required Brewfile, then `fzf` picker for optional entries |
-| 3     | `install-stow.sh`         | yes       | Symlink configs from top-level dirs into `$HOME`          |
-| 4     | `setup-git.sh`            | no        | Prompt (default no) to add a work git identity            |
-| 5     | `install-bat-themes.sh`   | yes       | Download Catppuccin theme, rebuild bat cache              |
-| 6     | `setup-macos-defaults.sh` | yes       | macOS defaults (appearance/OLED, Dock, Finder, keyboard)  |
-| 7     | `setup-1password.sh`      | yes       | SSH agent + Git signing via 1Password                     |
+| Phase | Script                    | Optional? | What it does                                                      |
+| ----- | ------------------------- | --------- | ----------------------------------------------------------------- |
+| 1     | `install-homebrew.sh`     | no        | Install or update Homebrew                                        |
+| 2     | `install-brewfile.sh`     | yes       | Required Brewfile, then `fzf` picker for optional entries         |
+| 3     | `install-stow.sh`         | yes       | Symlink configs from top-level dirs into `$HOME`                  |
+| 4     | `setup-git.sh`            | no        | Prompt (default no) to add a work git identity                    |
+| 5     | `install-bat-themes.sh`   | yes       | Download Catppuccin theme, rebuild bat cache                      |
+| 6     | `setup-macos-defaults.sh` | yes       | macOS defaults (appearance/OLED, Dock, Finder, keyboard)          |
+| 7     | `setup-1password.sh`      | yes       | SSH agent + Git signing via 1Password                             |
 | 8     | `install-ai-context.sh`   | yes       | Deploy shared AI context (base + personal) to Claude Code + Codex |
-| 9     | `install-rtk.sh`          | yes       | Link rtk filters, wire rtk into Claude Code + Codex        |
-| 10    | `install-skills.sh`       | yes       | Install curated agent skills via the `skills` CLI          |
-| 11    | `install-plugins.sh`      | yes       | Install agent plugins (ponytail, caveman, mattpocock) per agent |
+| 9     | `install-rtk.sh`          | yes       | Link rtk filters, wire rtk into Claude Code + Codex               |
+| 10    | `install-skills.sh`       | yes       | Install curated agent skills via the `skills` CLI                 |
+| 11    | `install-plugins.sh`      | yes       | Install agent plugins (ponytail, caveman, mattpocock) per agent   |
 
 Failed runs preserve `setup-YYYYMMDD-HHMMSS.log` in the repo root and print the path. Successful runs clean up.
 
@@ -175,11 +175,11 @@ activation), statuslines, and slash commands that a bare `SKILL.md` install woul
 they can't live in the skills lockfile; `install-plugins.sh` (Phase 11) installs them for
 whichever of `claude`/`codex` is present. Install paths differ per agent:
 
-| Plugin | Claude Code | Codex |
-| --- | --- | --- |
-| ponytail | `claude plugin install ponytail@ponytail` | native `codex plugin add ponytail@ponytail` |
-| caveman | `claude plugin install caveman@caveman` | `npx skills add JuliusBrussee/caveman -a codex` |
-| mattpocock-skills | `claude plugin install mattpocock-skills@claude-plugins-official` | `npx skills add mattpocock/skills -a codex` |
+| Plugin            | Claude Code                                                       | Codex                                           |
+| ----------------- | ----------------------------------------------------------------- | ----------------------------------------------- |
+| ponytail          | `claude plugin install ponytail@ponytail`                         | native `codex plugin add ponytail@ponytail`     |
+| caveman           | `claude plugin install caveman@caveman`                           | `npx skills add JuliusBrussee/caveman -a codex` |
+| mattpocock-skills | `claude plugin install mattpocock-skills@claude-plugins-official` | `npx skills add mattpocock/skills -a codex`     |
 
 ```bash
 ~/.dotfiles/scripts/install-plugins.sh   # installs for claude and/or codex, whichever exist
@@ -258,13 +258,55 @@ pick it in the picker.
 `setup-macos-defaults.sh` (optional) sets:
 
 - **Appearance (tuned for OLED):** force Dark mode permanently (dark pixels are physically off — less power, no burn-in); Graphite (grey) accent colour; disable font smoothing for crisp text (set in both scopes since it's read per-host); reduce transparency (solid black menus/Dock instead of grey); reduce motion; auto-hide the Dock and menu bar to remove the two permanent bright strips
+- Menu Bat: show battery percentage
 - Finder: show extensions, path bar, status bar; column view; folders on top; search current folder; new windows open at `$HOME`; no `.DS_Store` on network/USB
-- Dock: `tilesize=37`, hide recent apps, auto-hide
+- Dock: `tilesize=48`, hide recent apps, auto-hide
+- Trackpad: three-finger drag, tap with one finger to click
 - Keyboard: fast key repeat (2/15), no press-and-hold accent picker, full keyboard access in dialogs
 - Launch Services: no "Are you sure?" prompt for downloaded apps
-- Screenshots saved to `~/Downloads`
+- Screenshots saved to `~/Screenshots`
 - App Store: daily update check, auto-install
+- Save/Print: show full dialogs instead of compact
 
 > **Note:** reduce transparency and reduce motion write to `com.apple.universalaccess`,
 > which the accessibility daemon caches. They only take effect after a **logout/login**.
 > The rest apply immediately via `killall Dock`/`Finder`/`SystemUIServer`.
+
+### Control Centre
+
+Keep occasional system controls in Control Centre rather than permanently in
+the menu bar.
+
+Configured controls:
+
+- Battery
+- Wi-Fi
+- Bluetooth
+- Now Playing
+- Focus
+- Display
+- Sound
+- Screen Mirroring
+- Accessibility Shortcuts
+- Screenshot / screen capture controls
+
+Keep these out of the menu bar unless there's a reason to see their state
+continuously.
+
+### Widgets & Notification Centre
+
+Keep the Desktop clear. Notification Centre is the home for glanceable
+information.
+
+Widgets:
+
+- Weather
+- Batteries
+- Calendar
+
+Avoid widgets that duplicate information already available in the menu bar or
+Control Centre.
+
+### Battery
+
+- [ ] Set charge limit to 80% / enable Optimised Battery Charging
