@@ -258,7 +258,7 @@ pick it in the picker.
 `setup-macos-defaults.sh` (optional) sets:
 
 - **Appearance (tuned for OLED):** force Dark mode permanently (dark pixels are physically off — less power, no burn-in); Graphite (grey) accent colour; disable font smoothing for crisp text (set in both scopes since it's read per-host); reduce transparency (solid black menus/Dock instead of grey); reduce motion; auto-hide the Dock and menu bar to remove the two permanent bright strips
-- Menu Bat: show battery percentage
+- Menu Bar: show battery percentage
 - Finder: show extensions, path bar, status bar; column view; folders on top; search current folder; new windows open at `$HOME`; no `.DS_Store` on network/USB
 - Dock: `tilesize=48`, hide recent apps, auto-hide
 - Trackpad: three-finger drag, tap with one finger to click
