@@ -92,8 +92,8 @@ ua_ok=true
 defaults write com.apple.universalaccess reduceTransparency -bool true 2>/dev/null || ua_ok=false
 defaults write com.apple.universalaccess reduceMotion -bool true 2>/dev/null || ua_ok=false
 if [ "$ua_ok" = false ]; then
-	warn "Skipped reduce transparency/motion: com.apple.universalaccess needs Full Disk Access."
-	warn "Grant your terminal Full Disk Access (System Settings > Privacy & Security), then re-run this phase."
+  warn "Skipped reduce transparency/motion: com.apple.universalaccess needs Full Disk Access."
+  warn "Grant your terminal Full Disk Access (System Settings > Privacy & Security), then re-run this phase."
 fi
 
 # Auto-hide the menu bar when not in use.

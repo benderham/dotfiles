@@ -27,6 +27,7 @@ cask:1password                               # password manager (provides the SS
 cask:1password-cli                           # op CLI — used by setup-1password.sh for signing
 cask:chatgpt                                 # ChatGPT desktop app
 cask:claude                                  # Claude desktop app
+cask:cursor                                  # Cursor editor
 cask:claude-code                             # Claude Code coding agent (CLI)
 cask:codex                                   # OpenAI Codex coding agent (CLI)
 cask:firefox@developer-edition               # browser
@@ -36,6 +37,7 @@ cask:insomnia                                # HTTP & GraphQL client
 cask:logi-options+                           # Logitech mouse/keyboard settings
 cask:logitune                                # Logitech webcam/headset settings
 cask:notion                                  # notes & docs
+cask:obsidian                                # Markdown knowledge base
 cask:notion-calendar                         # calendar
 cask:raycast                                 # launcher & productivity
 cask:slack                                   # team chat
