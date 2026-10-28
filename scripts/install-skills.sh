@@ -5,6 +5,16 @@ source "$(cd "$(dirname "$0")" && pwd)/lib.sh"
 
 info "Setting up skills..."
 
+agent=""
+if [ "${1:-}" = "--agent" ] && [ -n "${2:-}" ]; then
+	agent="$2"
+	shift 2
+fi
+if [ "$#" -ne 0 ] || { [ -n "$agent" ] && [[ ! "$agent" =~ ^(cursor|claude-code|codex)$ ]]; }; then
+	error "Usage: $0 [--agent cursor|claude-code|codex]"
+	exit 2
+fi
+
 # Curated global skills, installed with the `skills` CLI (via npx) into the
 # agents present. Format: "owner/repo|comma,separated,skill,names".
 #
@@ -23,10 +33,15 @@ SKILLS=(
 
 # Target whichever agents are installed.
 agents=""
-command_exists claude && agents="claude-code"
-command_exists codex && agents="${agents:+$agents,}codex"
+if [ -n "$agent" ]; then
+	agents="$agent"
+else
+	command_exists claude && agents="claude-code"
+	command_exists codex && agents="${agents:+$agents,}codex"
+	command_exists cursor && agents="${agents:+$agents,}cursor"
+fi
 if [ -z "$agents" ]; then
-	warn "Neither claude nor codex found on PATH. Skipping skills."
+	warn "No supported AI agent found on PATH. Skipping skills."
 	warn "Install an agent, then re-run: ~/.dotfiles/scripts/install-skills.sh"
 	exit 0
 fi

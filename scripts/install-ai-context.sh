@@ -3,6 +3,20 @@ set -euo pipefail
 
 source "$(cd "$(dirname "$0")" && pwd)/lib.sh"
 
+agent=""
+if [ "${1:-}" = "--agent" ] && [ -n "${2:-}" ]; then
+	agent="$2"
+	shift 2
+fi
+if [ "$#" -ne 0 ] || { [ -n "$agent" ] && [[ ! "$agent" =~ ^(cursor|claude-code|codex)$ ]]; }; then
+	error "Usage: $0 [--agent cursor|claude-code|codex]"
+	exit 2
+fi
+if [ "$agent" = "cursor" ]; then
+	info "Shared AI context is not configured for Cursor by this phase."
+	exit 0
+fi
+
 # ai-context — shared personal instructions for AI coding agents.
 # This phase:
 #   1. Clones/updates the ai-context repo (portable base + personal supplement).
@@ -24,7 +38,9 @@ source "$(cd "$(dirname "$0")" && pwd)/lib.sh"
 # Run BEFORE the rtk phase: rtk appends its own @RTK.md ref to ~/.codex/AGENTS.md,
 # and regenerating here would drop it. A full setup.sh run self-heals.
 
-if ! command_exists claude && ! command_exists codex; then
+if { [ -z "$agent" ] && ! command_exists claude && ! command_exists codex; } ||
+	{ [ "$agent" = "claude-code" ] && ! command_exists claude; } ||
+	{ [ "$agent" = "codex" ] && ! command_exists codex; }; then
 	warn "Neither claude nor codex found on PATH. Skipping ai-context."
 	warn "Install an agent, then re-run: ~/.dotfiles/scripts/install-ai-context.sh"
 	exit 0
@@ -118,7 +134,7 @@ fi
 
 # -- Claude Code ---------------------------------------------------------------
 # Rewrite a managed block of @imports; preserve everything else in CLAUDE.md.
-if command_exists claude; then
+if { [ -z "$agent" ] && command_exists claude; } || [ "$agent" = "claude-code" ]; then
 	info "Wiring ai-context into Claude Code..."
 	mkdir -p "$HOME/.claude"
 	CLAUDE_MD="$HOME/.claude/CLAUDE.md"
@@ -139,7 +155,7 @@ fi
 
 # -- Codex ---------------------------------------------------------------------
 # No import syntax: generate ~/.codex/AGENTS.md by concatenating the sources.
-if command_exists codex; then
+if { [ -z "$agent" ] && command_exists codex; } || [ "$agent" = "codex" ]; then
 	info "Wiring ai-context into Codex..."
 	mkdir -p "$HOME/.codex"
 	CODEX_MD="$HOME/.codex/AGENTS.md"

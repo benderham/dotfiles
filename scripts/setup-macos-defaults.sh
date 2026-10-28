@@ -6,6 +6,7 @@ source "$(cd "$(dirname "$0")" && pwd)/lib.sh"
 info "Applying macOS defaults..."
 
 # -- Keyboard / text ---------------------------------------------------------
+defaults write NSGlobalDomain AppleICUForce24HourTime -bool true
 defaults write NSGlobalDomain KeyRepeat -int 2
 defaults write NSGlobalDomain InitialKeyRepeat -int 15
 defaults write NSGlobalDomain ApplePressAndHoldEnabled -bool false

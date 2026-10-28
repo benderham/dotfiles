@@ -21,3 +21,4 @@ alias binstall='brew bundle --file=~/.dotfiles/Brewfile'
 # bootstrap Brewfile. Cherry-pick anything new into Brewfile.optional by hand.
 alias bdump='brew bundle dump --force --no-vscode --file=/tmp/Brewfile.dump'
 alias bclean='brew bundle cleanup --force --file=~/.dotfiles/Brewfile'
+setup-ai() { "$HOME/.dotfiles/scripts/setup-ai.sh" "$@"; }

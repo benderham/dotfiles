@@ -3,6 +3,21 @@ set -euo pipefail
 
 source "$(cd "$(dirname "$0")" && pwd)/lib.sh"
 
+agent=""
+if [ "${1:-}" = "--agent" ] && [ -n "${2:-}" ]; then
+	agent="$2"
+	shift 2
+fi
+if [ "$#" -ne 0 ] || { [ -n "$agent" ] && [[ ! "$agent" =~ ^(cursor|claude-code|codex)$ ]]; }; then
+	error "Usage: $0 [--agent cursor|claude-code|codex]"
+	exit 2
+fi
+
+if [ "$agent" = "cursor" ]; then
+	info "The current plugin setup does not support Cursor; skipping plugins."
+	exit 0
+fi
+
 # Install hook-driven / marketplace plugins for whichever agents are present.
 # These can't live in the skills lockfile: they ship SessionStart hooks,
 # statuslines, and slash commands that a bare SKILL.md install would drop.
@@ -23,7 +38,7 @@ CLAUDE_PLUGINS=(
 
 installed_any=false
 
-if command_exists claude; then
+if { [ -z "$agent" ] && command_exists claude; } || [ "$agent" = "claude-code" ]; then
 	info "Installing plugins for Claude Code..."
 	for entry in "${CLAUDE_PLUGINS[@]}"; do
 		mkt="${entry%%|*}"
@@ -36,7 +51,7 @@ if command_exists claude; then
 fi
 
 # -- Codex --------------------------------------------------------------------
-if command_exists codex; then
+if { [ -z "$agent" ] && command_exists codex; } || [ "$agent" = "codex" ]; then
 	info "Installing plugins for Codex..."
 
 	# ponytail ships a native Codex plugin.

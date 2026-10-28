@@ -32,10 +32,10 @@ Only Phase 1 (Homebrew) is mandatory — everything else depends on the tools it
 | 3     | `install-stow.sh`         | yes       | Symlink configs from top-level dirs into `$HOME`                  |
 | 4     | `setup-git.sh`            | no        | Prompt (default no) to add a work git identity                    |
 | 5     | `install-bat-themes.sh`   | yes       | Download Catppuccin theme, rebuild bat cache                      |
-| 6     | `setup-macos-defaults.sh` | yes       | macOS defaults (appearance/OLED, Dock, Finder, keyboard)          |
+| 6     | `setup-macos-defaults.sh` | yes       | macOS defaults (appearance/OLED, Dock, Finder, keyboard, 24-hour clock) |
 | 7     | `setup-1password.sh`      | yes       | SSH agent + Git signing via 1Password                             |
 | 8     | `install-ai-context.sh`   | yes       | Deploy shared AI context (base + personal) to Claude Code + Codex |
-| 9     | `install-rtk.sh`          | yes       | Link rtk filters, wire rtk into Claude Code + Codex               |
+| 9     | `install-rtk.sh`          | yes       | Link rtk filters, wire rtk into Claude Code, Codex, and Cursor     |
 | 10    | `install-skills.sh`       | yes       | Install curated agent skills via the `skills` CLI                 |
 | 11    | `install-plugins.sh`      | yes       | Install agent plugins (ponytail, caveman, mattpocock) per agent   |
 
@@ -80,6 +80,10 @@ brew bundle cleanup --force --file=~/.dotfiles/Brewfile
 > to restore your optional packages afterwards.
 
 VS Code extensions sync through Settings Sync, hence `--no-vscode`.
+
+`Brewfile.optional` includes both Cursor and VS Code as optional editors, plus
+Discord as an optional app. Git keeps `code --wait` as its editor command; set
+Cursor's `code` shell command in Cursor if you want it to handle Git edit prompts.
 
 ## Adding a new config
 
@@ -138,7 +142,7 @@ Requires the 1Password app with SSH agent enabled, the 1Password CLI, and an SSH
 A curated set of agent skills is declared in `install-skills.sh` as a `SKILLS`
 list (source repo + skill names). The phase installs them globally with the
 `skills` CLI (via `npx`) into whichever agents are present (`claude-code`,
-`codex`). The list is the source of truth: skills track their source repo's
+`codex`, `cursor`). The list is the source of truth: skills track their source repo's
 latest, the same way the agent plugins do.
 
 ### Install
@@ -194,6 +198,24 @@ cleanly.
 > the CLI can't auto-accept, run `/plugin install <plugin>@<marketplace>` in Claude Code. In
 > Codex, run `/hooks` to trust hooks after install.
 
+## Targeted AI setup
+
+The `setup-ai` shell function runs AI setup phases for one agent only:
+
+```bash
+setup-ai cursor
+setup-ai claude-code
+setup-ai codex
+```
+
+The command accepts one target per run. After the zsh config is stowed, the
+same command is available as `~/.dotfiles/scripts/setup-ai.sh cursor` even
+before opening a new shell.
+
+Cursor currently gets RTK and curated skills. Shared AI context and the curated
+plugin set report that they are unsupported for Cursor and are skipped. RTK and
+skills can also be run on their own with `--agent cursor`.
+
 ## AI context
 
 Shared, portable instructions for AI coding agents, kept in the private
@@ -222,6 +244,7 @@ This phase runs before rtk, which appends its own `@RTK.md` ref to that generate
 
 ```bash
 ~/.dotfiles/scripts/install-ai-context.sh   # re-run any time; idempotent
+~/.dotfiles/scripts/install-ai-context.sh --agent codex  # target Codex only
 ```
 
 > The repo is **private** and cloned over SSH (via the 1Password SSH agent). The
@@ -237,15 +260,17 @@ This phase runs before rtk, which appends its own `@RTK.md` ref to that generate
 trims noisy tool output to cut token spend. It's an optional Brewfile entry (`brew:rtk`);
 pick it in the picker.
 
-`install-rtk.sh` (Phase 9) is idempotent:
+`install-rtk.sh` (Phase 9) is idempotent and supports Claude Code, Codex, and Cursor:
 
 - Symlinks the tracked global filters (`rtk/filters.toml`) into
   `~/Library/Application Support/rtk/filters.toml`.
-- Wires rtk into **Claude Code** via `rtk init -g --auto-patch`, only if `claude` is installed.
-- Wires rtk into **Codex** via `rtk init -g --codex`, only if `codex` is installed.
+- Wires rtk into **Claude Code** via `rtk init -g --auto-patch`, if installed.
+- Wires rtk into **Codex** via `rtk init -g --codex`, if installed.
+- Wires rtk into **Cursor** via `rtk init -g --agent cursor`, if installed or explicitly selected.
 
 ```bash
 ~/.dotfiles/scripts/install-rtk.sh   # re-run any time; no-ops if already set up
+~/.dotfiles/scripts/install-rtk.sh --agent cursor  # target Cursor only
 ```
 
 > `rtk` is intentionally **not** a stow package. Its config dir also holds runtime data
@@ -262,6 +287,7 @@ pick it in the picker.
 - Finder: show extensions, path bar, status bar; column view; folders on top; search current folder; new windows open at `$HOME`; no `.DS_Store` on network/USB
 - Dock: `tilesize=48`, hide recent apps, auto-hide
 - Trackpad: three-finger drag, tap with one finger to click
+- Clock: use 24-hour time
 - Keyboard: fast key repeat (2/15), no press-and-hold accent picker, full keyboard access in dialogs
 - Launch Services: no "Are you sure?" prompt for downloaded apps
 - Screenshots saved to `~/Screenshots`

@@ -28,6 +28,7 @@ cask:1password-cli                           # op CLI — used by setup-1passwor
 cask:chatgpt                                 # ChatGPT desktop app
 cask:claude                                  # Claude desktop app
 cask:cursor                                  # Cursor editor
+cask:discord                                 # team chat
 cask:claude-code                             # Claude Code coding agent (CLI)
 cask:codex                                   # OpenAI Codex coding agent (CLI)
 cask:firefox@developer-edition               # browser
@@ -41,4 +42,4 @@ cask:obsidian                                # Markdown knowledge base
 cask:notion-calendar                         # calendar
 cask:raycast                                 # launcher & productivity
 cask:slack                                   # team chat
-cask:visual-studio-code                      # editor (git core.editor = code --wait)
+cask:visual-studio-code                      # optional editor
