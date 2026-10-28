@@ -66,6 +66,14 @@ source "$DOTFILES/scripts/lib.sh"
 step "Phase 1 — Homebrew"
 "$DOTFILES/scripts/install-homebrew.sh"
 
+# Phase 1 is a child process, so propagate Homebrew's environment before the
+# later setup phases launch their own scripts.
+if [[ $(uname -m) == "arm64" ]]; then
+	eval "$(/opt/homebrew/bin/brew shellenv)"
+else
+	eval "$(/usr/local/bin/brew shellenv)"
+fi
+
 step "Phase 2 — Brewfile (required + optional picker)"
 optional_phase "Install Homebrew packages (required Brewfile + optional picker)?" \
 	"$DOTFILES/scripts/install-brewfile.sh" \
