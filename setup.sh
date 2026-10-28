@@ -87,6 +87,8 @@ optional_phase "Symlink dotfiles into \$HOME with stow?" \
 step "Phase 4 — Git identity"
 # Runs unconditionally; the script prompts (default no) and only writes a work
 # identity if you say this is a work machine.
+# Work signing can be added later by re-running setup-git.sh after creating the
+# 1Password SSH key; answer no at the signing prompt if the key isn't ready.
 "$DOTFILES/scripts/setup-git.sh"
 
 step "Phase 5 — Bat themes"
@@ -100,7 +102,7 @@ optional_phase "Apply macOS defaults (appearance, Dock, Finder, keyboard, 24-hou
 	"Skipping macOS defaults. Run later: ~/.dotfiles/scripts/setup-macos-defaults.sh"
 
 step "Phase 7 — 1Password for Git"
-optional_phase "Set up 1Password for Git?" \
+optional_phase "Set up 1Password for Git? (sign in and enable CLI integration first)" \
 	"$DOTFILES/scripts/setup-1password.sh" \
 	"Skipping 1Password setup. Run later: ~/.dotfiles/scripts/setup-1password.sh"
 

@@ -48,7 +48,7 @@ fi
 # -- Optional work commit signing ---------------------------------------------
 
 signing_block=""
-read -r -p "$(printf "${YELLOW}? Set up work commit signing? [y/N] ${NC}")" sign_reply
+read -r -p "$(printf "${YELLOW}? Set up work commit signing now? Requires an existing SSH key; answer no to defer. [y/N] ${NC}")" sign_reply
 if [[ "$sign_reply" =~ ^[Yy] ]]; then
 	read -r -p "Work SSH public key (e.g. 'ssh-ed25519 AAAA...'): " work_key
 	if [ -z "$work_key" ]; then
