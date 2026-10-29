@@ -25,9 +25,9 @@ fi
 
 # -- 2. Git signing (requires 1Password CLI and signed in) --------------------
 
-read -r -p "$(printf "${YELLOW}? Is 1Password signed in with CLI integration enabled? [y/N] ${NC}")" ready_reply
+read -r -p "$(printf "${YELLOW}? Does 'op account list' show your signed-in account? [y/N] ${NC}")" ready_reply
 if [[ ! "$ready_reply" =~ ^[Yy] ]]; then
-	warn "Skipping Git signing. Sign in, enable CLI integration, then re-run this script."
+	warn "Skipping Git signing. Sign in, enable CLI integration, confirm 'op account list' works, then re-run this script."
 	exit 0
 fi
 
