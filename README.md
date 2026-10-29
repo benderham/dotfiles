@@ -37,7 +37,7 @@ Only Phase 1 (Homebrew) is mandatory — everything else depends on the tools it
 | 8     | `install-ai-context.sh`   | yes       | Deploy shared AI context (base + personal) to Claude Code + Codex |
 | 9     | `install-rtk.sh`          | yes       | Link rtk filters, wire rtk into Claude Code, Codex, and Cursor     |
 | 10    | `install-skills.sh`       | yes       | Install curated agent skills via the `skills` CLI                 |
-| 11    | `install-plugins.sh`      | yes       | Install agent plugins (ponytail, caveman, mattpocock) per agent   |
+| 11    | `install-plugins.sh`      | yes       | Install agent plugins (ponytail, mattpocock) per agent    |
 
 Failed runs preserve `setup-YYYYMMDD-HHMMSS.log` in the repo root and print the path. Successful runs clean up.
 
@@ -186,17 +186,15 @@ whichever of `claude`/`codex` is present. Install paths differ per agent:
 | Plugin            | Claude Code                                                       | Codex                                           |
 | ----------------- | ----------------------------------------------------------------- | ----------------------------------------------- |
 | ponytail          | `claude plugin install ponytail@ponytail`                         | native `codex plugin add ponytail@ponytail`     |
-| caveman           | `claude plugin install caveman@caveman`                           | `npx skills add JuliusBrussee/caveman -a codex` |
 | mattpocock-skills | `claude plugin install mattpocock-skills@claude-plugins-official` | `npx skills add mattpocock/skills -a codex`     |
 
 ```bash
 ~/.dotfiles/scripts/install-plugins.sh   # installs for claude and/or codex, whichever exist
 ```
 
-Only ponytail has a native Codex plugin; caveman and mattpocock have no native Codex plugin
-yet, so on Codex they install via the cross-agent skills registry (`npx skills add`, needs
-`node`/`npx` on PATH — mise provides it). Each step is `|| warn`, so unsupported combos skip
-cleanly.
+Only ponytail has a native Codex plugin; mattpocock has no native Codex plugin yet, so on
+Codex it installs via the cross-agent skills registry (`npx skills add`, needs `node`/`npx`
+on PATH — mise provides it). Each step is `|| warn`, so unsupported combos skip cleanly.
 
 > Lifecycle hooks need `node` on PATH. Claude Code may require confirming a trust prompt — if
 > the CLI can't auto-accept, run `/plugin install <plugin>@<marketplace>` in Claude Code. In

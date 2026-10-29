@@ -124,7 +124,7 @@ optional_phase "Install curated agent skills for Claude Code, Codex, or Cursor?"
 	"Skipping skills. Run later: ~/.dotfiles/scripts/install-skills.sh"
 
 step "Phase 11 — Agent plugins"
-optional_phase "Install agent plugins (ponytail, caveman, mattpocock-skills)?" \
+optional_phase "Install agent plugins (ponytail, mattpocock-skills)?" \
 	"$DOTFILES/scripts/install-plugins.sh" \
 	"Skipping plugins. Run later: ~/.dotfiles/scripts/install-plugins.sh"
 
