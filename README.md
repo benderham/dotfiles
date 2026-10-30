@@ -135,7 +135,7 @@ Re-run any time (it can also revert a machine back to the personal default):
 - 1Password SSH agent socket into `~/.ssh/config`
 - `~/.gitconfig-1password-ssh` for SSH-based commit signing (sourced by the main gitconfig)
 
-Requires the 1Password app with SSH agent enabled, the 1Password CLI, and an SSH key item named `GitHub key`.
+Requires the 1Password app with SSH agent enabled, the 1Password CLI, and an SSH key item named `GitHub SSH Key`.
 Sign in to 1Password, enable CLI integration, and confirm `op account list`
 shows your account before running the setup phase.
 For work signing, create the work SSH key first; if it isn't ready during Git

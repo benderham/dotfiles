@@ -39,7 +39,7 @@ fi
 
 info "Setting up Git commit signing..."
 
-if SSH_KEY=$(op item get "GitHub key" --fields "public key" 2>/dev/null); then
+if SSH_KEY=$(op item get "GitHub SSH Key" --fields "public key" 2>/dev/null); then
 	cat > "$HOME/.gitconfig-1password-ssh" <<EOF
 [user]
   signingkey = $SSH_KEY
@@ -56,7 +56,7 @@ EOF
 	success "Created ~/.gitconfig-1password-ssh."
 else
 	warn "Could not get SSH key from 1Password. Git signing setup skipped."
-	warn "Make sure you have an SSH key item named 'GitHub key' in 1Password."
+	warn "Make sure you have an SSH key item named 'GitHub SSH Key' in 1Password."
 fi
 
 success "1Password setup complete."
