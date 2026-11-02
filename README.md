@@ -34,10 +34,6 @@ Only Phase 1 (Homebrew) is mandatory — everything else depends on the tools it
 | 5     | `install-bat-themes.sh`   | yes       | Download Catppuccin theme, rebuild bat cache                      |
 | 6     | `setup-macos-defaults.sh` | yes       | macOS defaults (appearance/OLED, Dock, Finder, keyboard, 24-hour clock) |
 | 7     | `setup-1password.sh`      | yes       | SSH agent + Git signing via 1Password                             |
-| 8     | `install-ai-context.sh`   | yes       | Deploy shared AI context (base + personal) to Claude Code + Codex |
-| 9     | `install-rtk.sh`          | yes       | Link rtk filters, wire rtk into Claude Code, Codex, and Cursor     |
-| 10    | `install-skills.sh`       | yes       | Install curated agent skills via the `skills` CLI                 |
-| 11    | `install-plugins.sh`      | yes       | Install agent plugins (ponytail, mattpocock) per agent    |
 
 Failed runs preserve `setup-YYYYMMDD-HHMMSS.log` in the repo root and print the path. Successful runs clean up.
 
@@ -141,144 +137,11 @@ shows your account before running the setup phase.
 For work signing, create the work SSH key first; if it isn't ready during Git
 identity setup, answer no and re-run `~/.dotfiles/scripts/setup-git.sh` later.
 
-## Skills
+## AI tools
 
-A curated set of agent skills is declared in `install-skills.sh` as a `SKILLS`
-list (source repo + skill names). The phase installs them globally with the
-`skills` CLI (via `npx`) into whichever agents are present (`claude-code`,
-`codex`, `cursor`). The list is the source of truth: skills track their source repo's
-latest, the same way the agent plugins do.
-
-### Install
-
-`install-skills.sh` (Phase 10) ensures Node is available via mise, then installs
-each entry:
-
-```bash
-~/.dotfiles/scripts/install-skills.sh
-```
-
-### Usage
-
-```bash
-npx skills list -g                       # what's installed globally
-npx skills add -g <owner>/<repo> -l      # list a repo's available skill names
-npx skills add -g <owner>/<repo> -s <a,b> -a claude-code,codex -y   # install
-npx skills remove -g -s <name> -a claude-code                       # remove
-```
-
-To change the curated set, edit the `SKILLS` list in `install-skills.sh`, re-run
-the phase, and commit the script.
-
-> **Tracks latest, not pinned.** The old global lockfile model was dropped by the
-> `skills` CLI, so there's no version pinning: skills follow their repo's latest,
-> like Claude Code **plugins** do. Don't manage the same skill via both a plugin
-> and this list, or it loads twice. First-party/Anthropic plugins (e.g. cloudflare,
-> dataviz) aren't GitHub skills and stay as plugins.
-
-## Agent plugins
-
-Some tools are **plugins**, not plain skills — they ship SessionStart hooks (always-on
-activation), statuslines, and slash commands that a bare `SKILL.md` install would drop. So
-they can't live in the skills lockfile; `install-plugins.sh` (Phase 11) installs them for
-whichever of `claude`/`codex` is present. Install paths differ per agent:
-
-| Plugin            | Claude Code                                                       | Codex                                           |
-| ----------------- | ----------------------------------------------------------------- | ----------------------------------------------- |
-| ponytail          | `claude plugin install ponytail@ponytail`                         | native `codex plugin add ponytail@ponytail`     |
-| mattpocock-skills | `claude plugin install mattpocock-skills@claude-plugins-official` | `npx skills add mattpocock/skills -a codex`     |
-
-```bash
-~/.dotfiles/scripts/install-plugins.sh   # installs for claude and/or codex, whichever exist
-```
-
-Only ponytail has a native Codex plugin; mattpocock has no native Codex plugin yet, so on
-Codex it installs via the cross-agent skills registry (`npx skills add`, needs `node`/`npx`
-on PATH — mise provides it). Each step is `|| warn`, so unsupported combos skip cleanly.
-
-> Lifecycle hooks need `node` on PATH. Claude Code may require confirming a trust prompt — if
-> the CLI can't auto-accept, run `/plugin install <plugin>@<marketplace>` in Claude Code. In
-> Codex, run `/hooks` to trust hooks after install.
-
-## Targeted AI setup
-
-The `setup-ai` shell function runs AI setup phases for one agent only:
-
-```bash
-setup-ai cursor
-setup-ai claude-code
-setup-ai codex
-```
-
-The command accepts one target per run. After the zsh config is stowed, the
-same command is available as `~/.dotfiles/scripts/setup-ai.sh cursor` even
-before opening a new shell.
-
-Cursor currently gets RTK and curated skills. Shared AI context and the curated
-plugin set report that they are unsupported for Cursor and are skipped. RTK and
-skills can also be run on their own with `--agent cursor`.
-
-## AI context
-
-Shared, portable instructions for AI coding agents, kept in the private
-[`ai-context`](https://github.com/benderham/ai-context) repo and layered per machine.
-
-`install-ai-context.sh` (Phase 8) clones/updates that repo into
-`~/.config/ai-context/repo`, seeds a private per-machine overlay, and wires the
-context into whichever agents are present:
-
-- **Every machine** gets the base `AGENTS.md`.
-- **Personal machines** also get `personal.md`.
-- **Each machine** gets its own private `~/.config/ai-context/local.md` overlay, seeded once from `local.md.example` and never committed.
-- **Work machines** get the base only; work context is handled separately and manually.
-
-Work vs personal is decided by, in order: an explicit marker file
-(`~/.config/ai-context/work` forces work, `~/.config/ai-context/personal` forces
-personal), else the git identity signal (`~/.gitconfig-machine`, written by
-`setup-git.sh`). The marker lets a machine be classed independently of its git
-identity, e.g. a work AI account on a machine that keeps a personal git default:
-`touch ~/.config/ai-context/work`.
-
-Claude Code gets a managed `@import` block in `~/.claude/CLAUDE.md` (rewritten each
-run, content outside the block preserved). Codex has no import syntax, so
-`~/.codex/AGENTS.md` is generated by concatenating the sources — don't hand-edit it.
-This phase runs before rtk, which appends its own `@RTK.md` ref to that generated file.
-
-```bash
-~/.dotfiles/scripts/install-ai-context.sh   # re-run any time; idempotent
-~/.dotfiles/scripts/install-ai-context.sh --agent codex  # target Codex only
-```
-
-> The repo is **private** and cloned over SSH (via the 1Password SSH agent). The
-> phase first gates on GitHub auth: if `gh` isn't logged in it launches
-> `gh auth login` before continuing, and if `gh` isn't installed it skips with a
-> hint (pick it in the Brewfile picker). If the SSH clone itself fails, ensure your
-> key is on GitHub and the 1Password agent is running, then re-run. If a broken
-> empty checkout was left behind, `rm -rf ~/.config/ai-context/repo` first.
-
-## rtk
-
-[rtk](https://www.rtk-ai.app/) is a token-optimizing CLI proxy for AI coding agents — it
-trims noisy tool output to cut token spend. It's an optional Brewfile entry (`brew:rtk`);
-pick it in the picker.
-
-`install-rtk.sh` (Phase 9) is idempotent and supports Claude Code, Codex, and Cursor:
-
-- Symlinks the tracked global filters (`rtk/filters.toml`) into
-  `~/Library/Application Support/rtk/filters.toml`.
-- Wires rtk into **Claude Code** via `rtk init -g --auto-patch`, if installed.
-- Wires rtk into **Codex** via `rtk init -g --codex`, if installed.
-- Wires rtk into **Cursor** via `rtk init -g --agent cursor`, if installed or explicitly selected.
-
-```bash
-~/.dotfiles/scripts/install-rtk.sh   # re-run any time; no-ops if already set up
-~/.dotfiles/scripts/install-rtk.sh --agent cursor  # target Cursor only
-```
-
-> `rtk` is intentionally **not** a stow package. Its config dir also holds runtime data
-> (`history.db`), so stow would fold that into the repo. The script symlinks only
-> `filters.toml`; the hook/`RTK.md`/agent-config artifacts are regenerated by `rtk init`,
-> so they aren't tracked.
+AI coding agents remain optional applications in `Brewfile.optional`. This repository
+does not configure agent context, skills, plugins, or RTK. Use the [AI context
+repository](https://github.com/benderham/ai-context) for manual setup instructions.
 
 ## macOS defaults
 

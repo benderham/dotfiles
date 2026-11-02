@@ -106,28 +106,6 @@ optional_phase "Set up 1Password for Git? (sign in and enable CLI integration fi
 	"$DOTFILES/scripts/setup-1password.sh" \
 	"Skipping 1Password setup. Run later: ~/.dotfiles/scripts/setup-1password.sh"
 
-step "Phase 8 — AI context (Claude Code / Codex)"
-# Must run before rtk: rtk appends its @RTK.md ref to Codex's generated
-# AGENTS.md, and this phase regenerates that file.
-optional_phase "Set up shared AI context for Claude Code and Codex?" \
-	"$DOTFILES/scripts/install-ai-context.sh" \
-	"Skipping AI context. Run later: ~/.dotfiles/scripts/install-ai-context.sh"
-
-step "Phase 9 — rtk (Claude Code / Codex / Cursor)"
-optional_phase "Set up rtk for installed AI agents?" \
-	"$DOTFILES/scripts/install-rtk.sh" \
-	"Skipping rtk. Run later: ~/.dotfiles/scripts/install-rtk.sh"
-
-step "Phase 10 — Skills (Claude Code / Codex / Cursor)"
-optional_phase "Install curated agent skills for Claude Code, Codex, or Cursor?" \
-	"$DOTFILES/scripts/install-skills.sh" \
-	"Skipping skills. Run later: ~/.dotfiles/scripts/install-skills.sh"
-
-step "Phase 11 — Agent plugins"
-optional_phase "Install agent plugins (ponytail, mattpocock-skills)?" \
-	"$DOTFILES/scripts/install-plugins.sh" \
-	"Skipping plugins. Run later: ~/.dotfiles/scripts/install-plugins.sh"
-
 # -- Done ----------------------------------------------------------------------
 
 step "Done"
